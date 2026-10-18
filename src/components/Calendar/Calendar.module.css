@@ -1,0 +1,87 @@
+/* ---- ヘッダー(月 / 日 / 曜日) ---- */
+
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerRow {
+  display: flex;
+  height: var(--row-height);
+}
+
+.monthCell,
+.dayCell {
+  flex: none;
+  box-sizing: border-box;
+  height: var(--row-height);
+  line-height: var(--row-height);
+  border-right: 1px solid var(--grid-line-color);
+  border-bottom: 1px solid var(--grid-line-color);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.monthCell {
+  /* 月の途中までスクロールしても月名が見えるように、ラベルを左ペインの右隣に貼り付ける */
+  overflow: visible;
+}
+
+.monthLabel {
+  position: sticky;
+  left: var(--left-pane-width);
+  padding: 0 4px;
+}
+
+.dayCell {
+  width: var(--day-width);
+  text-align: center;
+}
+
+.dayOff {
+  background: var(--day-off-color);
+}
+
+.today {
+  color: var(--today-color);
+  font-weight: bold;
+}
+
+/* ---- 本体 ---- */
+
+.body {
+  position: relative;
+}
+
+/* 日ごとの縦ストライプ。全行の高さを持つ1要素で、背景色と縦罫線を担当する */
+.stripe {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--day-width);
+  box-sizing: border-box;
+  border-right: 1px solid var(--grid-line-color);
+}
+
+/* 今日の目印。列の中央に細い縦線を引く */
+.todayLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--today-color);
+  opacity: 0.35;
+}
+
+/* 行ごとの横罫線(点線)。バーはこの要素の中に絶対配置する */
+.rowLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--row-height);
+  box-sizing: border-box;
+  border-bottom: 1px dotted var(--grid-line-color);
+}

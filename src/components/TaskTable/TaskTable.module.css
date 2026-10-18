@@ -1,0 +1,61 @@
+.headerRow,
+.row {
+  display: flex;
+}
+
+.nameCol {
+  width: var(--name-col-width);
+}
+
+.dateCol,
+.dateCell {
+  width: var(--date-col-width);
+}
+
+/* ---- 列見出し ---- */
+
+.headerCell {
+  flex: none;
+  box-sizing: border-box;
+  /* カレンダーのヘッダー3段と高さをそろえ、文字は下に寄せる */
+  height: var(--header-height);
+  display: flex;
+  align-items: flex-end;
+  padding: 0 6px 4px;
+  border-right: 1px solid var(--grid-line-color);
+  border-bottom: 1px solid var(--grid-line-color);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ---- セル ---- */
+
+.cell {
+  flex: none;
+  box-sizing: border-box;
+  height: var(--row-height);
+  margin: 0;
+  padding: 0 6px;
+  border: none;
+  border-right: 1px solid var(--grid-line-color);
+  border-bottom: 1px dotted var(--grid-line-color);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  color: inherit;
+  /* 枠線の代わりに内側の影で選択中を示す(枠線を太くするとセル幅が変わって行がずれるため) */
+  outline: none;
+}
+
+.cell:focus {
+  box-shadow: inset 0 0 0 2px var(--focus-color);
+}
+
+.dateCell {
+  text-align: right;
+}
+
+.invalid,
+.invalid:focus {
+  box-shadow: inset 0 0 0 2px var(--error-color);
+}

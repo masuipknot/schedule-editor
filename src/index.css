@@ -1,0 +1,26 @@
+/* 色はここにまとめる。寸法は JS でも使うので src/layout.ts で管理している */
+:root {
+  --toolbar-height: 44px;
+
+  --text-color: #222;
+  --surface-color: #fff;
+  --toolbar-color: #f6f7f9;
+  --grid-line-color: #d9d9d9;
+  --grid-line-strong-color: #b5b5b5;
+  /* 土日祝の背景。雛形スプレッドシートの #CCCCCC に合わせる */
+  --day-off-color: #cccccc;
+  --today-color: #d93025;
+  /* バーの色。雛形の #FFD966 に合わせる */
+  --bar-color: #ffd966;
+  --bar-border-color: #e0b400;
+  --focus-color: #1a73e8;
+  --error-color: #d93025;
+
+  font-family: system-ui, -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+  color: var(--text-color);
+  background: var(--surface-color);
+}
+
+body {
+  margin: 0;
+}

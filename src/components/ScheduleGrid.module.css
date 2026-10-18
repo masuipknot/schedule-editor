@@ -1,0 +1,55 @@
+/* 縦横スクロールする唯一の箱。高さは親(App)が画面に合わせて決めるので、
+   横スクロールバーは常に画面の下端に見える */
+.scroll {
+  height: 100%;
+  overflow: auto;
+  background: var(--surface-color);
+}
+
+/* 中身の全幅(左ペイン + 日数 × 列幅)を持たせて、横スクロールを発生させる */
+.inner {
+  position: relative;
+}
+
+/* ---- 上段: 列見出し + カレンダーのヘッダー ---- */
+
+.headerArea {
+  display: flex;
+  position: sticky;
+  top: 0;
+  /* スクロールしてきた本体より手前に表示する */
+  z-index: 2;
+  background: var(--surface-color);
+}
+
+/* 左上の角は縦にも横にも固定(top は .headerArea が担当) */
+.corner {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  flex: none;
+  width: var(--left-pane-width);
+  background: var(--surface-color);
+}
+
+/* ---- 下段: 左ペイン + カレンダー本体 ---- */
+
+.bodyArea {
+  display: flex;
+}
+
+.leftPane {
+  position: sticky;
+  left: 0;
+  /* 横スクロールで下を通るバーより手前に表示する */
+  z-index: 1;
+  flex: none;
+  width: var(--left-pane-width);
+  background: var(--surface-color);
+  /* 固定されていることが分かるよう、右端に影を付ける */
+  box-shadow: 2px 0 0 var(--grid-line-strong-color);
+}
+
+.calendar {
+  flex: 1;
+}

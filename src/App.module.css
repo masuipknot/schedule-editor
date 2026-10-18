@@ -1,0 +1,36 @@
+/* 画面全体をビューポートの高さに合わせる。
+   スクロールはこの中の ScheduleGrid だけで起こるので、横スクロールバーが常に画面内に見える */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: var(--toolbar-height);
+  padding: 0 12px;
+  border-bottom: 1px solid var(--grid-line-strong-color);
+  background: var(--toolbar-color);
+}
+
+.title {
+  margin: 0;
+  font-size: 15px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.main {
+  flex: 1;
+  /* flex の子は既定で中身より小さくならないため、0 にしないと高さが画面からはみ出す */
+  min-height: 0;
+}
