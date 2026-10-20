@@ -111,6 +111,12 @@ export function formatYmdSlash(ymd: Ymd): string {
   return `${year}/${month}/${day}`
 }
 
+/** ドラッグ中のツールチップ用 "4/13(月)〜4/16(木) 4日間" */
+export function formatRangeLabel(start: Ymd, end: Ymd): string {
+  const days = diffDays(start, end) + 1 // 開始日と終了日の両方を含めて数える
+  return `${formatMD(start)}(${weekdayJa(start)})〜${formatMD(end)}(${weekdayJa(end)}) ${days}日間`
+}
+
 /** 全角数字・全角スラッシュ・全角ハイフンを半角にそろえる */
 function normalizeInput(text: string): string {
   return text

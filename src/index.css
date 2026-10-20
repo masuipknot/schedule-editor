@@ -15,6 +15,10 @@
   --bar-border-color: #e0b400;
   --bar-selected-color: #ffc928;
   --bar-selected-border-color: #b07d00;
+  /* バーの左右端の「つかむと伸縮する」幅 */
+  --bar-handle-width: 6px;
+  --tooltip-color: #333;
+  --tooltip-text-color: #fff;
   --focus-color: #1a73e8;
   --error-color: #d93025;
 
@@ -25,4 +29,18 @@
 
 body {
   margin: 0;
+}
+
+/* ドラッグ中は、カーソルがどこにあっても操作に合った形にし、文字の選択も起こさない。
+   data-dragging 属性は useBarDrag.ts が html 要素に付け外しする */
+html[data-dragging] * {
+  user-select: none;
+}
+
+html[data-dragging='move'] * {
+  cursor: grabbing !important;
+}
+
+html[data-dragging^='resize'] * {
+  cursor: ew-resize !important;
 }

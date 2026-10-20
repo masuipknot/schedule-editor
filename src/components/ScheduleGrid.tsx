@@ -1,4 +1,5 @@
-import { useMemo, type Dispatch } from 'react'
+import { useMemo, useRef, type Dispatch } from 'react'
+import { useBarDrag } from '../hooks/useBarDrag'
 import { useBarSelection } from '../hooks/useBarSelection'
 import { layoutCssVars } from '../layout'
 import type { ScheduleAction, ScheduleState } from '../state/types'
@@ -25,9 +26,16 @@ export function ScheduleGrid({ state, dispatch }: Props) {
   // 祝日判定などを含むので、表示範囲が変わったときだけ計算し直す
   const days = useMemo(() => buildCalendarDays(view), [view])
   const { selectedId, select } = useBarSelection(dispatch)
+  // スクロールコンテナの DOM 要素。ドラッグ処理でスクロール量を読んだり、ポインタをキャプチャしたりする
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const { preview, handleBarPointerDown, containerHandlers } = useBarDrag({
+    scrollRef,
+    dispatch,
+    onSelect: select,
+  })
 
   return (
-    <div className={styles.scroll} style={layoutCssVars}>
+    <div ref={scrollRef} className={styles.scroll} style={layoutCssVars} {...containerHandlers}>
       <div
         className={styles.inner}
         style={{ width: `calc(var(--left-pane-width) + var(--day-width) * ${view.days})` }}
@@ -48,7 +56,8 @@ export function ScheduleGrid({ state, dispatch }: Props) {
               tasks={tasks}
               view={view}
               selectedId={selectedId}
-              onSelect={select}
+              preview={preview}
+              onBarPointerDown={handleBarPointerDown}
             />
           </div>
         </div>

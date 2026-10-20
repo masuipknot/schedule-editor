@@ -1,4 +1,6 @@
-import { diffDays } from '../../lib/date'
+import type { PointerEvent } from 'react'
+import type { DragPreview } from '../../hooks/useBarDrag'
+import { diffDays, formatRangeLabel } from '../../lib/date'
 import type { Task, ViewRange } from '../../state/types'
 import { Bar } from '../Bar'
 import type { CalendarDay } from './calendarDays'
@@ -9,7 +11,8 @@ type Props = {
   tasks: Task[]
   view: ViewRange
   selectedId: string | null
-  onSelect: (id: string) => void
+  preview: DragPreview | null
+  onBarPointerDown: (e: PointerEvent, task: Task) => void
 }
 
 /**
@@ -19,7 +22,14 @@ type Props = {
  *  - 行ごとに最大1本のバー
  * を重ねて描く。セル方式だと 30行 × 120日 = 3600 個以上の要素になり、操作が重くなるため
  */
-export function CalendarBody({ days, tasks, view, selectedId, onSelect }: Props) {
+export function CalendarBody({
+  days,
+  tasks,
+  view,
+  selectedId,
+  preview,
+  onBarPointerDown,
+}: Props) {
   return (
     <div
       className={styles.body}
@@ -45,7 +55,8 @@ export function CalendarBody({ days, tasks, view, selectedId, onSelect }: Props)
             task={task}
             view={view}
             selected={task.id === selectedId}
-            onSelect={() => onSelect(task.id)}
+            preview={preview?.taskId === task.id ? preview : null}
+            onPointerDown={(e) => onBarPointerDown(e, task)}
           />
         </div>
       ))}
@@ -57,15 +68,20 @@ type TaskBarProps = {
   task: Task
   view: ViewRange
   selected: boolean
-  onSelect: () => void
+  /** このバーをドラッグ中なら、その仮の日付 */
+  preview: DragPreview | null
+  onPointerDown: (e: PointerEvent) => void
 }
 
 /** タスクの日付から、バーを表示範囲のどこに置くかを計算する */
-function TaskBar({ task, view, selected, onSelect }: TaskBarProps) {
-  if (task.start === null || task.end === null) return null
+function TaskBar({ task, view, selected, preview, onPointerDown }: TaskBarProps) {
+  // ドラッグ中はプレビューの日付で描く。確定するまで task 自体は書き換えない
+  const start = preview?.start ?? task.start
+  const end = preview?.end ?? task.end
+  if (start === null || end === null) return null
 
-  const startIndex = diffDays(view.start, task.start)
-  const endIndex = diffDays(view.start, task.end) // 終了日も含むので、右端は endIndex + 1
+  const startIndex = diffDays(view.start, start)
+  const endIndex = diffDays(view.start, end) // 終了日も含むので、右端は endIndex + 1
   // 表示開始日を後ろにずらした場合などは、見えている部分だけを描く
   const left = Math.max(startIndex, 0)
   const right = Math.min(endIndex + 1, view.days)
@@ -78,7 +94,9 @@ function TaskBar({ task, view, selected, onSelect }: TaskBarProps) {
       clippedStart={startIndex < 0}
       clippedEnd={endIndex + 1 > view.days}
       selected={selected}
-      onSelect={onSelect}
+      dragging={preview !== null}
+      tooltip={preview ? formatRangeLabel(start, end) : null}
+      onPointerDown={onPointerDown}
     />
   )
 }
