@@ -8,6 +8,8 @@ type Props = {
   days: CalendarDay[]
   tasks: Task[]
   view: ViewRange
+  selectedId: string | null
+  onSelect: (id: string) => void
 }
 
 /**
@@ -17,7 +19,7 @@ type Props = {
  *  - 行ごとに最大1本のバー
  * を重ねて描く。セル方式だと 30行 × 120日 = 3600 個以上の要素になり、操作が重くなるため
  */
-export function CalendarBody({ days, tasks, view }: Props) {
+export function CalendarBody({ days, tasks, view, selectedId, onSelect }: Props) {
   return (
     <div
       className={styles.body}
@@ -39,15 +41,27 @@ export function CalendarBody({ days, tasks, view }: Props) {
           className={styles.rowLine}
           style={{ top: `calc(var(--row-height) * ${row})` }}
         >
-          <TaskBar task={task} view={view} />
+          <TaskBar
+            task={task}
+            view={view}
+            selected={task.id === selectedId}
+            onSelect={() => onSelect(task.id)}
+          />
         </div>
       ))}
     </div>
   )
 }
 
+type TaskBarProps = {
+  task: Task
+  view: ViewRange
+  selected: boolean
+  onSelect: () => void
+}
+
 /** タスクの日付から、バーを表示範囲のどこに置くかを計算する */
-function TaskBar({ task, view }: { task: Task; view: ViewRange }) {
+function TaskBar({ task, view, selected, onSelect }: TaskBarProps) {
   if (task.start === null || task.end === null) return null
 
   const startIndex = diffDays(view.start, task.start)
@@ -63,6 +77,8 @@ function TaskBar({ task, view }: { task: Task; view: ViewRange }) {
       span={right - left}
       clippedStart={startIndex < 0}
       clippedEnd={endIndex + 1 > view.days}
+      selected={selected}
+      onSelect={onSelect}
     />
   )
 }

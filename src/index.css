@@ -13,6 +13,8 @@
   /* バーの色。雛形の #FFD966 に合わせる */
   --bar-color: #ffd966;
   --bar-border-color: #e0b400;
+  --bar-selected-color: #ffc928;
+  --bar-selected-border-color: #b07d00;
   --focus-color: #1a73e8;
   --error-color: #d93025;
 

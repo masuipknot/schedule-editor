@@ -1,4 +1,5 @@
 import { useMemo, type Dispatch } from 'react'
+import { useBarSelection } from '../hooks/useBarSelection'
 import { layoutCssVars } from '../layout'
 import type { ScheduleAction, ScheduleState } from '../state/types'
 import { CalendarBody } from './Calendar/CalendarBody'
@@ -23,6 +24,7 @@ export function ScheduleGrid({ state, dispatch }: Props) {
   const { tasks, view } = state
   // 祝日判定などを含むので、表示範囲が変わったときだけ計算し直す
   const days = useMemo(() => buildCalendarDays(view), [view])
+  const { selectedId, select } = useBarSelection(dispatch)
 
   return (
     <div className={styles.scroll} style={layoutCssVars}>
@@ -41,7 +43,13 @@ export function ScheduleGrid({ state, dispatch }: Props) {
             <TaskTable tasks={tasks} viewStart={view.start} dispatch={dispatch} />
           </div>
           <div className={styles.calendar}>
-            <CalendarBody days={days} tasks={tasks} view={view} />
+            <CalendarBody
+              days={days}
+              tasks={tasks}
+              view={view}
+              selectedId={selectedId}
+              onSelect={select}
+            />
           </div>
         </div>
       </div>
