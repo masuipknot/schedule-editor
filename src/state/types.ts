@@ -24,7 +24,7 @@ export type ScheduleState = {
 }
 
 // reducer が受け付ける操作の一覧。状態を変えたいときは必ずこのどれかを dispatch する。
-// Phase 3 以降で PASTE_CELLS / ADD_ROWS などを足していく
+// Phase 4 で PASTE_CELLS、Phase 6 で ADD_ROWS などを足していく
 export type ScheduleAction =
   | { type: 'UPDATE_NAME'; id: string; name: string }
   | { type: 'SET_DATES'; id: string; start: Ymd | null; end: Ymd | null }
