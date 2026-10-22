@@ -13,6 +13,10 @@ dist-ssr
 docs/private/
 *.local
 
+# Cloudflare(wrangler)のローカル作業用ファイルと、ローカル用の秘密情報
+.wrangler
+.dev.vars*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

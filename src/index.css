@@ -21,6 +21,10 @@
   --tooltip-text-color: #fff;
   --focus-color: #1a73e8;
   --error-color: #d93025;
+  /* 「開発中」などの注意書き */
+  --notice-color: #fff4e5;
+  --notice-border-color: #f0b25a;
+  --notice-text-color: #8a4b00;
 
   font-family: system-ui, -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
   color: var(--text-color);

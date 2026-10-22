@@ -29,6 +29,17 @@
   font-size: 13px;
 }
 
+.devNotice {
+  /* ツールバーの右端に寄せる */
+  margin: 0 0 0 auto;
+  padding: 2px 8px;
+  border: 1px solid var(--notice-border-color);
+  border-radius: 3px;
+  background: var(--notice-color);
+  color: var(--notice-text-color);
+  font-size: 12px;
+}
+
 .main {
   flex: 1;
   /* flex の子は既定で中身より小さくならないため、0 にしないと高さが画面からはみ出す */

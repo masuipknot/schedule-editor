@@ -1,0 +1,5 @@
+# Cloudflare Workers の静的アセット配信で、全ページの応答にヘッダーを付ける設定。
+# 検索エンジンにインデックスさせない(index.html の robots メタタグと二重に指定している。
+# メタタグは HTML にしか効かないので、画像などそれ以外のファイルにも効くヘッダーでも指定する)
+/*
+  X-Robots-Tag: noindex, nofollow

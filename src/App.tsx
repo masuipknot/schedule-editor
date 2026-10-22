@@ -25,6 +25,11 @@ export default function App() {
             }}
           />
         </label>
+        {/* 保存機能(Phase 6)ができるまでの注意書き。Phase 6 で
+            「データはこのブラウザ内にのみ保存されます」の表示に差し替える */}
+        <p className={styles.devNotice} role="note">
+          開発中:データは保存されません
+        </p>
       </header>
       <main className={styles.main}>
         <ScheduleGrid state={state} dispatch={dispatch} />

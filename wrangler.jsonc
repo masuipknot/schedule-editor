@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Cloudflare 上の Worker 名。ダッシュボードで GitHub 連携するときの名前と一致させる
+  "name": "schedule-editor",
+  // Workers の実行環境の「どの時点の動作に合わせるか」。手元の wrangler が対応している日付までしか指定できない
+  // (新しすぎると npm run dev / preview が起動しない)。wrangler を更新したときに見直す
+  "compatibility_date": "2026-10-19",
+  // schedule-editor.<アカウント>.workers.dev で公開する
+  "workers_dev": true,
+  // master 以外のブランチや各バージョンごとのプレビュー URL は作らない
+  // (公開する URL を1つに絞り、意図しないアドレスで見られないようにするため)
+  "preview_urls": false,
+  "assets": {
+    // サーバー側の処理はなく、ビルドした静的ファイルを配るだけ。
+    // 存在しないパスにアクセスされても index.html を返す(1ページのアプリなので)
+    "not_found_handling": "single-page-application"
+  }
+}
