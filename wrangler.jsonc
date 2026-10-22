@@ -7,7 +7,7 @@
   "compatibility_date": "2026-10-19",
   // schedule-editor.<アカウント>.workers.dev で公開する
   "workers_dev": true,
-  // master 以外のブランチや各バージョンごとのプレビュー URL は作らない
+  // main 以外のブランチや各バージョンごとのプレビュー URL は作らない
   // (公開する URL を1つに絞り、意図しないアドレスで見られないようにするため)
   "preview_urls": false,
   "assets": {
