@@ -44,3 +44,7 @@ html[data-dragging='move'] * {
 html[data-dragging^='resize'] * {
   cursor: ew-resize !important;
 }
+
+html[data-dragging='create'] * {
+  cursor: crosshair !important;
+}

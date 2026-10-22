@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { applyDrag, dayIndexAt } from './barDrag'
+import {
+  applyDrag,
+  createRangeBetweenLines,
+  dayIndexAt,
+  dayLineAt,
+  nearestLineIndex,
+} from './barDrag'
 
 describe('dayIndexAt', () => {
   // カレンダーの見えている左端が画面の x=335、列幅 26px
@@ -47,5 +53,45 @@ describe('applyDrag', () => {
 
   it('動かしていなければ元のまま', () => {
     expect(applyDrag('move', original, 0)).toEqual(original)
+  })
+})
+
+describe('nearestLineIndex', () => {
+  // セルの大きさ 26px。線 n は n 番目のセルの左端
+  it('セルの前半分なら、そのセルの左端の線', () => {
+    expect(nearestLineIndex(26 * 3, 26)).toBe(3) // セル3の左端ちょうど
+    expect(nearestLineIndex(26 * 3 + 12, 26)).toBe(3) // セル3の中央より少し左
+  })
+
+  it('セルの後ろ半分なら、次のセルの左端の線', () => {
+    expect(nearestLineIndex(26 * 3 + 13, 26)).toBe(4) // セル3の中央
+    expect(nearestLineIndex(26 * 3 + 25, 26)).toBe(4)
+  })
+
+  it('狙ったセルの左端を少し左に外しても、狙ったセルの線になる', () => {
+    expect(nearestLineIndex(26 * 3 - 5, 26)).toBe(3)
+  })
+})
+
+describe('dayLineAt', () => {
+  it('スクロール量を足してから一番近い線を求める', () => {
+    // カレンダーの左端が x=420、260px スクロール済み。x=430 は 270px 地点 → 10.4 → 線 10
+    expect(dayLineAt(430, 420, 260, 26)).toBe(10)
+    expect(dayLineAt(445, 420, 260, 26)).toBe(11)
+  })
+})
+
+describe('createRangeBetweenLines', () => {
+  it('右へ引いたら、線と線の間の日が期間になる', () => {
+    expect(createRangeBetweenLines(3, 7, false)).toEqual({ startIndex: 3, endIndex: 6 })
+  })
+
+  it('左へ引いても、線と線の間の日が期間になる', () => {
+    expect(createRangeBetweenLines(7, 3, true)).toEqual({ startIndex: 3, endIndex: 6 })
+  })
+
+  it('同じ線のままなら、ドラッグした向きの1日', () => {
+    expect(createRangeBetweenLines(3, 3, false)).toEqual({ startIndex: 3, endIndex: 3 })
+    expect(createRangeBetweenLines(3, 3, true)).toEqual({ startIndex: 2, endIndex: 2 })
   })
 })

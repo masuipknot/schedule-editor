@@ -85,3 +85,8 @@
   box-sizing: border-box;
   border-bottom: 1px dotted var(--grid-line-color);
 }
+
+/* ポインタが新規作成できる位置にあるとき(CalendarBody の hoverCreatable) */
+.creatable {
+  cursor: crosshair;
+}

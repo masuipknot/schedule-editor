@@ -28,11 +28,8 @@ export function ScheduleGrid({ state, dispatch }: Props) {
   const { selectedId, select } = useBarSelection(dispatch)
   // スクロールコンテナの DOM 要素。ドラッグ処理でスクロール量を読んだり、ポインタをキャプチャしたりする
   const scrollRef = useRef<HTMLDivElement>(null)
-  const { preview, handleBarPointerDown, containerHandlers } = useBarDrag({
-    scrollRef,
-    dispatch,
-    onSelect: select,
-  })
+  const { preview, handleBarPointerDown, handleEmptyRowPointerDown, containerHandlers } =
+    useBarDrag({ scrollRef, dispatch, viewStart: view.start, onSelect: select })
 
   return (
     <div ref={scrollRef} className={styles.scroll} style={layoutCssVars} {...containerHandlers}>
@@ -58,6 +55,7 @@ export function ScheduleGrid({ state, dispatch }: Props) {
               selectedId={selectedId}
               preview={preview}
               onBarPointerDown={handleBarPointerDown}
+              onEmptyRowPointerDown={handleEmptyRowPointerDown}
             />
           </div>
         </div>

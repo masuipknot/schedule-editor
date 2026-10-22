@@ -1,6 +1,8 @@
-import type { PointerEvent } from 'react'
+import { useState, type PointerEvent } from 'react'
 import type { DragPreview } from '../../hooks/useBarDrag'
+import { nearestLineIndex } from '../../lib/barDrag'
 import { diffDays, formatRangeLabel } from '../../lib/date'
+import { ROW_HEIGHT } from '../../layout'
 import type { Task, ViewRange } from '../../state/types'
 import { Bar } from '../Bar'
 import type { CalendarDay } from './calendarDays'
@@ -13,11 +15,13 @@ type Props = {
   selectedId: string | null
   preview: DragPreview | null
   onBarPointerDown: (e: PointerEvent, task: Task) => void
+  /** 日付のない行の空き部分を押したとき(ドラッグで新規作成する)。task は新規作成の対象の行 */
+  onEmptyRowPointerDown: (e: PointerEvent, task: Task) => void
 }
 
 /**
  * カレンダーの本体。「行 × 日」のセルは作らず、
- *  - 日ごとの縦ストライプ(土日祝のグレーと縦罫線)
+ *  - 日ごとの縦ストライプ(土日祝の休日色と縦罫線)
  *  - 行ごとの横罫線
  *  - 行ごとに最大1本のバー
  * を重ねて描く。セル方式だと 30行 × 120日 = 3600 個以上の要素になり、操作が重くなるため
@@ -29,11 +33,35 @@ export function CalendarBody({
   selectedId,
   preview,
   onBarPointerDown,
+  onEmptyRowPointerDown,
 }: Props) {
+  // ポインタが「新規作成できる位置」の上にあるか。カーソルを十字にするために使う
+  const [hoverCreatable, setHoverCreatable] = useState(false)
+
+  /**
+   * ポインタの位置から、新規作成の対象になる行を求める(対象がなければ null)。
+   * 行は「一番近い横線」で決める: 行の上半分ならその行、下半分なら下の行。
+   * 日付のある行や、最終行より下は対象外
+   */
+  function creatableTaskAt(e: PointerEvent<HTMLDivElement>): Task | null {
+    // バーの上では、バーの操作(選択・移動・伸縮)を優先する
+    if (e.target instanceof Element && e.target.closest('[data-bar]')) return null
+    const offsetY = e.clientY - e.currentTarget.getBoundingClientRect().top
+    const task = tasks.at(nearestLineIndex(offsetY, ROW_HEIGHT))
+    return task && task.start === null ? task : null
+  }
+
   return (
     <div
-      className={styles.body}
+      className={[styles.body, hoverCreatable && styles.creatable].filter(Boolean).join(' ')}
       style={{ height: `calc(var(--row-height) * ${tasks.length})` }}
+      // 押した行ではなく「一番近い横線」で対象の行が決まるので、行ごとではなく本体全体で受ける
+      onPointerDown={(e) => {
+        const task = creatableTaskAt(e)
+        if (task) onEmptyRowPointerDown(e, task)
+      }}
+      onPointerMove={(e) => setHoverCreatable(creatableTaskAt(e) !== null)}
+      onPointerLeave={() => setHoverCreatable(false)}
     >
       {days.map((d) => (
         <div
