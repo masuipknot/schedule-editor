@@ -109,6 +109,16 @@ describe('scheduleReducer', () => {
     expect(state.tasks[0]).toMatchObject({ start: null, end: null })
   })
 
+  it('EXTEND_VIEW_DAYS は表示日数だけを延ばす', () => {
+    const state = scheduleReducer(stateWithOneTask(), { type: 'EXTEND_VIEW_DAYS', days: 30 })
+    expect(state.view).toEqual({ start: '2026-04-01', days: 150 })
+  })
+
+  it('EXTEND_VIEW_DAYS で 0 以下を渡しても縮まない', () => {
+    const before = stateWithOneTask()
+    expect(scheduleReducer(before, { type: 'EXTEND_VIEW_DAYS', days: -10 })).toBe(before)
+  })
+
   it('SET_VIEW_START は表示開始日だけを変える', () => {
     const state = scheduleReducer(stateWithOneTask(), { type: 'SET_VIEW_START', start: '2026-06-01' })
     expect(state.view).toEqual({ start: '2026-06-01', days: 120 })

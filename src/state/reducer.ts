@@ -9,6 +9,8 @@ export const INITIAL_ROW_COUNT = 30
 export const INITIAL_VIEW_DAYS = 120
 /** 表示範囲を自動で広げるとき、日付の先に余白として足す日数(バーの右端が画面の端に貼り付かないように) */
 export const VIEW_EXTEND_MARGIN_DAYS = 7
+/** ドラッグ中に右端まで自動スクロールしたとき、一度に延ばす表示日数 */
+export const VIEW_EXTEND_CHUNK_DAYS = 30
 
 function createEmptyTask(): Task {
   return { id: crypto.randomUUID(), name: '', start: null, end: null }
@@ -85,5 +87,10 @@ export function scheduleReducer(state: ScheduleState, action: ScheduleAction): S
       // 利用者が明示的に表示開始日を変えたときは、範囲外になったバーがあっても自動では広げない
       // (広げてしまうと、後ろの期間だけを見たいときに開始日を動かせなくなるため)
       return { ...state, view: { ...state.view, start: action.start } }
+
+    case 'EXTEND_VIEW_DAYS':
+      // 縮める使い方は想定していないので、0 以下は無視する(誤って表示範囲が消えないように)
+      if (action.days <= 0) return state
+      return { ...state, view: { ...state.view, days: state.view.days + action.days } }
   }
 }

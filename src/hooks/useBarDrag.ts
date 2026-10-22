@@ -16,7 +16,9 @@ import {
 } from '../lib/barDrag'
 import { addDays, type Ymd } from '../lib/date'
 import { DAY_WIDTH, LEFT_PANE_WIDTH } from '../layout'
+import { VIEW_EXTEND_CHUNK_DAYS } from '../state/reducer'
 import type { ScheduleAction, Task } from '../state/types'
+import { useAutoScroll } from './useAutoScroll'
 
 /** ドラッグ中に画面へ見せる「仮の」日付。確定するまで reducer には入れない */
 export type DragPreview = {
@@ -34,6 +36,8 @@ type DragSession = {
   /** ドラッグ開始時の日付。移動量の計算の基準に使う(create のときは押した日1日分) */
   original: { start: Ymd; end: Ymd }
   startClientX: number
+  /** 最後に分かっているポインタの x 座標。自動スクロール中は、これを元に毎フレーム日付を計算し直す */
+  lastClientX: number
   /** 押した位置。move は「何日目のセルか」、それ以外は「何本目の縦線か」(positionAt を参照) */
   startPosition: number
   /** しきい値(4px)を超えて「ドラッグ」になったか。false のまま離したらクリック */
@@ -110,6 +114,7 @@ export function useBarDrag({ scrollRef, dispatch, viewStart, onSelect }: Options
       pointerId: e.pointerId,
       original,
       startClientX: e.clientX,
+      lastClientX: e.clientX,
       startPosition: positionAt(mode, e.clientX),
       dragging: false,
       current: original,
@@ -151,9 +156,25 @@ export function useBarDrag({ scrollRef, dispatch, viewStart, onSelect }: Options
 
   // 以下の4つはスクロールコンテナに付ける(キャプチャしたイベントはそこに届く)
 
+  /**
+   * 最後のポインタ位置(s.lastClientX)から日付を計算し直して、プレビューに反映する。
+   * ポインタが動いたときと、自動スクロールでスクロール位置が変わったときの両方から呼ぶ
+   */
+  function updatePreview(s: DragSession, force: boolean) {
+    const next =
+      s.mode === 'create'
+        ? createDates(s, s.lastClientX)
+        : applyDrag(s.mode, s.original, positionAt(s.mode, s.lastClientX) - s.startPosition)
+    // 日付が変わったときだけ再描画する(1px 動くたびに描き直さないため)
+    if (!force && next.start === s.current.start && next.end === s.current.end) return
+    s.current = next
+    setPreview({ taskId: s.taskId, mode: s.mode, ...next })
+  }
+
   function onPointerMove(e: ReactPointerEvent) {
     const s = sessionRef.current
     if (!s || e.pointerId !== s.pointerId) return
+    s.lastClientX = e.clientX
 
     let justStarted = false
     if (!s.dragging) {
@@ -166,15 +187,8 @@ export function useBarDrag({ scrollRef, dispatch, viewStart, onSelect }: Options
       document.documentElement.dataset.dragging = s.mode
     }
 
-    const next =
-      s.mode === 'create'
-        ? createDates(s, e.clientX)
-        : applyDrag(s.mode, s.original, positionAt(s.mode, e.clientX) - s.startPosition)
-    // 日付が変わったときだけ再描画する(1px 動くたびに描き直さないため)。
-    // ただしドラッグになった瞬間は、ツールチップを出すために必ず描く
-    if (!justStarted && next.start === s.current.start && next.end === s.current.end) return
-    s.current = next
-    setPreview({ taskId: s.taskId, mode: s.mode, ...next })
+    // ドラッグになった瞬間は、ツールチップを出すために必ず描く
+    updatePreview(s, justStarted)
   }
 
   function onPointerUp(e: ReactPointerEvent) {
@@ -200,6 +214,20 @@ export function useBarDrag({ scrollRef, dispatch, viewStart, onSelect }: Options
   function onPointerCancel(e: ReactPointerEvent) {
     if (sessionRef.current?.pointerId === e.pointerId) endSession()
   }
+
+  // ドラッグ中(preview があるあいだ)は、端での自動スクロールを有効にする
+  useAutoScroll({
+    active: preview !== null,
+    scrollRef,
+    getPointerX: () => sessionRef.current?.lastClientX ?? null,
+    onScrolled: () => {
+      // ポインタが止まっていても、スクロールでポインタの下の日付は変わるので計算し直す
+      const s = sessionRef.current
+      if (s?.dragging) updatePreview(s, false)
+    },
+    // 右端まで来たら表示日数を延ばして、さらに先へドラッグできるようにする(SPEC 5章・7-4)
+    onReachRightEnd: () => dispatch({ type: 'EXTEND_VIEW_DAYS', days: VIEW_EXTEND_CHUNK_DAYS }),
+  })
 
   // ドラッグ中の Esc で取り消す
   useEffect(() => {

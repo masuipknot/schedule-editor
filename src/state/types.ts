@@ -30,3 +30,5 @@ export type ScheduleAction =
   | { type: 'SET_DATES'; id: string; start: Ymd | null; end: Ymd | null }
   | { type: 'CLEAR_DATES'; id: string }
   | { type: 'SET_VIEW_START'; start: Ymd }
+  /** 表示日数を days 日分延ばす(ドラッグ中に右端まで自動スクロールしたとき) */
+  | { type: 'EXTEND_VIEW_DAYS'; days: number }
