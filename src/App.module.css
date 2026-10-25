@@ -29,6 +29,15 @@
   font-size: 13px;
 }
 
+.notice {
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  font-size: 12px;
+}
+
 .devNotice {
   /* ツールバーの右端に寄せる */
   margin: 0 0 0 auto;

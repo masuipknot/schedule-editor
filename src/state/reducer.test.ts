@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  applyCellPatch,
   createInitialState,
   extendViewToInclude,
   normalizeDates,
@@ -122,5 +123,93 @@ describe('scheduleReducer', () => {
   it('SET_VIEW_START は表示開始日だけを変える', () => {
     const state = scheduleReducer(stateWithOneTask(), { type: 'SET_VIEW_START', start: '2026-06-01' })
     expect(state.view).toEqual({ start: '2026-06-01', days: 120 })
+  })
+})
+
+describe('applyCellPatch(不変条件)', () => {
+  const dated = { id: 'a', name: '要件定義', start: '2026-04-01', end: '2026-04-10' }
+  const empty = { id: 'b', name: '', start: null, end: null }
+
+  it('触らない列(undefined)は元のまま', () => {
+    expect(applyCellPatch(dated, { name: '設計' })).toEqual({ ...dated, name: '設計' })
+  })
+
+  it('日付のある行で片方だけ空にしたら、両方空になる', () => {
+    expect(applyCellPatch(dated, { start: null })).toMatchObject({ start: null, end: null })
+    expect(applyCellPatch(dated, { end: null })).toMatchObject({ start: null, end: null })
+  })
+
+  it('空の行に片方だけ入れたら、もう片方を補完する', () => {
+    expect(applyCellPatch(empty, { start: '2026-04-13' })).toMatchObject({
+      start: '2026-04-13',
+      end: '2026-04-13',
+    })
+  })
+
+  it('新しい日付と空欄を一緒に貼ったら、新しい日付で補完する', () => {
+    expect(applyCellPatch(dated, { start: '2026-04-13', end: null })).toMatchObject({
+      start: '2026-04-13',
+      end: '2026-04-13',
+    })
+  })
+
+  it('開始 > 終了 なら入れ替える', () => {
+    expect(applyCellPatch(empty, { start: '2026-04-20', end: '2026-04-13' })).toMatchObject({
+      start: '2026-04-13',
+      end: '2026-04-20',
+    })
+  })
+})
+
+describe('PASTE_CELLS / CLEAR_CELLS', () => {
+  function threeRows(): ScheduleState {
+    return {
+      tasks: [
+        { id: 'a', name: 'A', start: '2026-04-01', end: '2026-04-03' },
+        { id: 'b', name: 'B', start: null, end: null },
+        { id: 'c', name: 'C', start: null, end: null },
+      ],
+      view: { start: '2026-04-01', days: 120 },
+    }
+  }
+
+  it('top 行目から順に書き込む', () => {
+    const state = scheduleReducer(threeRows(), {
+      type: 'PASTE_CELLS',
+      top: 1,
+      patches: [{ start: '2026-04-13', end: '2026-04-16' }, { name: 'CC' }],
+    })
+    expect(state.tasks[0]).toMatchObject({ name: 'A', start: '2026-04-01' })
+    expect(state.tasks[1]).toMatchObject({ start: '2026-04-13', end: '2026-04-16' })
+    expect(state.tasks[2]).toMatchObject({ name: 'CC', start: null })
+  })
+
+  it('行が足りなければ空行を追加する', () => {
+    const state = scheduleReducer(threeRows(), {
+      type: 'PASTE_CELLS',
+      top: 2,
+      patches: [{ name: 'X' }, { name: 'Y' }, { name: 'Z' }],
+    })
+    expect(state.tasks).toHaveLength(5)
+    expect(state.tasks.map((t) => t.name)).toEqual(['A', 'B', 'X', 'Y', 'Z'])
+    expect(new Set(state.tasks.map((t) => t.id)).size).toBe(5)
+  })
+
+  it('貼った日付が見えるように表示範囲を広げる', () => {
+    const state = scheduleReducer(threeRows(), {
+      type: 'PASTE_CELLS',
+      top: 1,
+      patches: [{ start: '2026-12-01', end: '2026-12-10' }],
+    })
+    expect(state.view.days).toBeGreaterThan(120)
+  })
+
+  it('CLEAR_CELLS で範囲の値を空にする(日付は不変条件どおり両方)', () => {
+    const state = scheduleReducer(threeRows(), {
+      type: 'CLEAR_CELLS',
+      top: 0,
+      patches: [{ name: '', start: null }],
+    })
+    expect(state.tasks[0]).toMatchObject({ name: '', start: null, end: null })
   })
 })

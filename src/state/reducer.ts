@@ -2,6 +2,7 @@
 // 操作の種類が増えても状態変更がここに集まるので、不変条件のチェックや、
 // 後から Undo/Redo・自動保存を足すときにこのファイルを見れば済む。
 
+import type { CellPatch } from '../lib/cells'
 import { addDays, compareYmd, diffDays, startOfMonth, type Ymd } from '../lib/date'
 import type { ScheduleAction, ScheduleState, Task, ViewRange } from './types'
 
@@ -56,6 +57,49 @@ export function extendViewToInclude(view: ViewRange, start: Ymd, end: Ymd): View
   return { start: viewStart, days: diffDays(viewStart, viewEnd) + 1 }
 }
 
+/**
+ * 1行分の書き換え(CellPatch)をタスクに当てはめる。開始日・終了日の不変条件(SPEC 4章)もここで守る。
+ * - 日付のある行で、片方だけをこの書き換えで空にした → 両方を空にする
+ *   (補完ルールのままだと、空にした側が反対側の日付で埋め直されてしまうため)
+ * - それ以外で片方だけ日付がある(空の行に片方だけ入れた、新しい日付と空欄を一緒に貼った など)
+ *   → もう片方を同じ日付で補完する
+ * - 開始 > 終了 なら入れ替える
+ */
+export function applyCellPatch(task: Task, patch: CellPatch): Task {
+  const name = patch.name ?? task.name
+  const start = patch.start !== undefined ? patch.start : task.start
+  const end = patch.end !== undefined ? patch.end : task.end
+
+  const clearedOneSideOfExistingDates =
+    (start === null && patch.start === null && end !== null && patch.end === undefined) ||
+    (end === null && patch.end === null && start !== null && patch.start === undefined)
+  if (clearedOneSideOfExistingDates) return { ...task, name, start: null, end: null }
+
+  return { ...task, name, ...normalizeDates(start, end) }
+}
+
+/**
+ * top 行目から順に書き換えを当てはめる。行が足りなければ空行を追加する(ペースト用)。
+ * 書き換えのない行は同じオブジェクトのまま残す
+ */
+function applyPatches(tasks: Task[], top: number, patches: CellPatch[]): Task[] {
+  const next = [...tasks]
+  while (next.length < top + patches.length) next.push(createEmptyTask())
+  patches.forEach((patch, i) => {
+    next[top + i] = applyCellPatch(next[top + i], patch)
+  })
+  return next
+}
+
+/** 書き換えで入った日付が見えるように表示範囲を広げる(SET_DATES と同じ考え方) */
+function extendViewForTasks(view: ViewRange, tasks: Task[]): ViewRange {
+  const dated = tasks.filter((t): t is Task & { start: Ymd; end: Ymd } => t.start !== null && t.end !== null)
+  if (dated.length === 0) return view
+  const start = dated.map((t) => t.start).reduce((a, b) => (compareYmd(a, b) <= 0 ? a : b))
+  const end = dated.map((t) => t.end).reduce((a, b) => (compareYmd(a, b) >= 0 ? a : b))
+  return extendViewToInclude(view, start, end)
+}
+
 /** id が一致するタスクだけを差し替える。他の行はそのまま(同じオブジェクト)を使う */
 function updateTask(tasks: Task[], id: string, update: (task: Task) => Task): Task[] {
   return tasks.map((task) => (task.id === id ? update(task) : task))
@@ -92,5 +136,15 @@ export function scheduleReducer(state: ScheduleState, action: ScheduleAction): S
       // 縮める使い方は想定していないので、0 以下は無視する(誤って表示範囲が消えないように)
       if (action.days <= 0) return state
       return { ...state, view: { ...state.view, days: state.view.days + action.days } }
+
+    case 'PASTE_CELLS': {
+      const tasks = applyPatches(state.tasks, action.top, action.patches)
+      const pasted = tasks.slice(action.top, action.top + action.patches.length)
+      return { tasks, view: extendViewForTasks(state.view, pasted) }
+    }
+
+    case 'CLEAR_CELLS':
+      // 空にするだけなので、行の追加や表示範囲の変更はない
+      return { ...state, tasks: applyPatches(state.tasks, action.top, action.patches) }
   }
 }

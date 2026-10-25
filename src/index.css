@@ -20,6 +20,8 @@
   --tooltip-color: #333;
   --tooltip-text-color: #fff;
   --focus-color: #1a73e8;
+  /* 左ペインで範囲選択しているセルの背景 */
+  --selection-color: #e8f0fe;
   --error-color: #d93025;
   /* 「開発中」などの注意書き */
   --notice-color: #fff4e5;
