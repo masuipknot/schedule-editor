@@ -1,11 +1,11 @@
 .bar {
   position: absolute;
   /* 行の上下に少し余白を空けて、横罫線と重ならないようにする */
-  top: 4px;
-  bottom: 4px;
+  top: var(--bar-inset-y);
+  bottom: var(--bar-inset-y);
   background: var(--bar-color);
-  border: 1px solid var(--bar-border-color);
-  border-radius: 3px;
+  border: var(--bar-border-width) solid var(--bar-border-color);
+  border-radius: var(--radius-small);
   box-sizing: border-box;
   cursor: grab;
 }
@@ -13,56 +13,56 @@
 /* 選択中は色を濃くし、枠を太くして区別する */
 .selected {
   background: var(--bar-selected-color);
-  border: 2px solid var(--bar-selected-border-color);
+  border: var(--bar-selected-border-width) solid var(--bar-selected-border-color);
 }
 
 /* ドラッグ中は少し浮いて見せる */
 .dragging {
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.25);
+  box-shadow: var(--shadow-dragging);
 }
 
 /* 表示範囲の外に続いていることが分かるよう、切れている側の角を丸めない */
 .clippedStart {
-  border-left-style: dashed;
+  border-left-style: var(--bar-clipped-border-style);
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 
 .clippedEnd {
-  border-right-style: dashed;
+  border-right-style: var(--bar-clipped-border-style);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-/* 左右の端のつまみ(透明)。枠線の外側まで含めて 6px にするため、枠線の分だけ外へずらす */
+/* 左右の端のつまみ(透明)。枠線の外側まで含めてつかめるよう、選択中の枠線の太さの分だけ外へずらす */
 .handle {
   position: absolute;
-  top: -2px;
-  bottom: -2px;
+  top: calc(var(--bar-selected-border-width) * -1);
+  bottom: calc(var(--bar-selected-border-width) * -1);
   width: var(--bar-handle-width);
   cursor: ew-resize;
 }
 
 .handleStart {
-  left: -2px;
+  left: calc(var(--bar-selected-border-width) * -1);
 }
 
 .handleEnd {
-  right: -2px;
+  right: calc(var(--bar-selected-border-width) * -1);
 }
 
 /* ドラッグ中の日付表示。バーの下に出す(上に出すと1行目では固定ヘッダーに隠れるため) */
 .tooltip {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + var(--tooltip-offset));
   left: 0;
   /* 後ろの行の要素より手前に出す */
   z-index: 1;
-  padding: 2px 6px;
-  border-radius: 3px;
+  padding: var(--tooltip-padding);
+  border-radius: var(--radius-small);
   background: var(--tooltip-color);
   color: var(--tooltip-text-color);
-  font-size: 12px;
+  font-size: var(--font-size-small);
   line-height: 1.5;
   white-space: nowrap;
   /* ツールチップがポインタのイベントを横取りしないように */

@@ -47,7 +47,7 @@
   width: var(--left-pane-width);
   background: var(--surface-color);
   /* 固定されていることが分かるよう、右端に影を付ける */
-  box-shadow: 2px 0 0 var(--grid-line-strong-color);
+  box-shadow: var(--pane-divider-width) 0 0 var(--grid-line-strong-color);
 }
 
 .calendar {

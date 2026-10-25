@@ -16,9 +16,9 @@
   box-sizing: border-box;
   height: var(--row-height);
   line-height: var(--row-height);
-  border-right: 1px solid var(--grid-line-color);
-  border-bottom: 1px solid var(--grid-line-color);
-  font-size: 12px;
+  border-right: var(--grid-line-width) solid var(--grid-line-color);
+  border-bottom: var(--grid-line-width) solid var(--grid-line-color);
+  font-size: var(--font-size-small);
   white-space: nowrap;
   overflow: hidden;
 }
@@ -31,7 +31,7 @@
 .monthLabel {
   position: sticky;
   left: var(--left-pane-width);
-  padding: 0 4px;
+  padding: 0 var(--month-label-padding-x);
 }
 
 .dayCell {
@@ -45,7 +45,7 @@
 
 .today {
   color: var(--today-color);
-  font-weight: bold;
+  font-weight: var(--font-weight-strong);
 }
 
 /* ---- 本体 ---- */
@@ -61,7 +61,7 @@
   bottom: 0;
   width: var(--day-width);
   box-sizing: border-box;
-  border-right: 1px solid var(--grid-line-color);
+  border-right: var(--grid-line-width) solid var(--grid-line-color);
 }
 
 /* 今日の目印。列の中央に細い縦線を引く */
@@ -70,10 +70,11 @@
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 2px;
-  margin-left: -1px;
+  width: var(--today-line-width);
+  /* 線の太さの半分だけ左へずらして、列の中央にそろえる */
+  margin-left: calc(var(--today-line-width) / -2);
   background: var(--today-color);
-  opacity: 0.35;
+  opacity: var(--today-line-opacity);
 }
 
 /* 行ごとの横罫線(点線)。バーはこの要素の中に絶対配置する */
@@ -83,7 +84,7 @@
   right: 0;
   height: var(--row-height);
   box-sizing: border-box;
-  border-bottom: 1px dotted var(--grid-line-color);
+  border-bottom: var(--grid-line-width) var(--row-line-style) var(--grid-line-color);
 }
 
 /* ポインタが新規作成できる位置にあるとき(CalendarBody の hoverCreatable) */

@@ -10,43 +10,43 @@
   flex: none;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--toolbar-gap);
   height: var(--toolbar-height);
-  padding: 0 12px;
-  border-bottom: 1px solid var(--grid-line-strong-color);
+  padding: 0 var(--toolbar-padding-x);
+  border-bottom: var(--grid-line-width) solid var(--grid-line-strong-color);
   background: var(--toolbar-color);
 }
 
 .title {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--font-size-title);
 }
 
 .field {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: var(--field-gap);
+  font-size: var(--font-size-body);
 }
 
 .notice {
   margin: 0;
-  padding: 2px 8px;
-  border-radius: 3px;
+  padding: var(--badge-padding);
+  border-radius: var(--radius-small);
   background: var(--tooltip-color);
   color: var(--tooltip-text-color);
-  font-size: 12px;
+  font-size: var(--font-size-small);
 }
 
 .devNotice {
   /* ツールバーの右端に寄せる */
   margin: 0 0 0 auto;
-  padding: 2px 8px;
-  border: 1px solid var(--notice-border-color);
-  border-radius: 3px;
+  padding: var(--badge-padding);
+  border: var(--grid-line-width) solid var(--notice-border-color);
+  border-radius: var(--radius-small);
   background: var(--notice-color);
   color: var(--notice-text-color);
-  font-size: 12px;
+  font-size: var(--font-size-small);
 }
 
 .main {

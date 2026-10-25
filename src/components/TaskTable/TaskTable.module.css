@@ -21,11 +21,11 @@
   height: var(--header-height);
   display: flex;
   align-items: flex-end;
-  padding: 0 6px 4px;
-  border-right: 1px solid var(--grid-line-color);
-  border-bottom: 1px solid var(--grid-line-color);
-  font-size: 12px;
-  font-weight: bold;
+  padding: 0 var(--cell-padding-x) var(--header-label-padding-bottom);
+  border-right: var(--grid-line-width) solid var(--grid-line-color);
+  border-bottom: var(--grid-line-width) solid var(--grid-line-color);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-strong);
   /* クリックで列全体を選べることを示す */
   cursor: pointer;
   user-select: none;
@@ -43,13 +43,13 @@
   box-sizing: border-box;
   height: var(--row-height);
   margin: 0;
-  padding: 0 6px;
+  padding: 0 var(--cell-padding-x);
   border: none;
-  border-right: 1px solid var(--grid-line-color);
-  border-bottom: 1px dotted var(--grid-line-color);
+  border-right: var(--grid-line-width) solid var(--grid-line-color);
+  border-bottom: var(--grid-line-width) var(--row-line-style) var(--grid-line-color);
   background: transparent;
   font: inherit;
-  font-size: 13px;
+  font-size: var(--font-size-body);
   color: inherit;
   /* 枠線の代わりに内側の影で選択中を示す(枠線を太くするとセル幅が変わって行がずれるため) */
   outline: none;
@@ -70,13 +70,15 @@
 
 /* 今いるセル(選択モード) */
 .focused {
-  box-shadow: inset 0 0 0 2px var(--focus-color);
+  box-shadow: inset 0 0 0 var(--focus-ring-width) var(--focus-color);
 }
 
 /* 編集モード: カーソルを出し、背景を白に戻して「入力中」だと分かるようにする */
 .editing {
   background: var(--surface-color);
-  box-shadow: inset 0 0 0 2px var(--focus-color), 0 1px 4px rgb(0 0 0 / 0.2);
+  box-shadow:
+    inset 0 0 0 var(--focus-ring-width) var(--focus-color),
+    var(--shadow-editing);
   caret-color: auto;
   cursor: text;
 }
@@ -87,5 +89,5 @@
 
 .invalid,
 .invalid.focused {
-  box-shadow: inset 0 0 0 2px var(--error-color);
+  box-shadow: inset 0 0 0 var(--focus-ring-width) var(--error-color);
 }

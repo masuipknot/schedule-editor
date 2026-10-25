@@ -1,7 +1,24 @@
-/* 色はここにまとめる。寸法は JS でも使うので src/layout.ts で管理している */
+/*
+ * 見た目の値(色・文字・線・角丸・影・余白)はここにまとめる。
+ * デザインを変えるときは、原則としてこの :root の値を変えるだけで済むようにしている。
+ *
+ * ※ 行の高さ・1日の列幅・左ペインの列幅は、ドラッグ判定などの計算(JS)でも使うので
+ *   src/layout.ts で管理し、そこから CSS 変数として渡している。ここには書かない。
+ * ※ 画面の要素と状態の一覧は docs/UI_STATES.md にある
+ */
 :root {
-  --toolbar-height: 44px;
+  /* ---- 文字 ---- */
+  --font-family: system-ui, -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+  /* ツールバーのアプリ名 */
+  --font-size-title: 15px;
+  /* 左ペインのセル、ツールバーの入力欄の見出し */
+  --font-size-body: 13px;
+  /* 列見出し、カレンダーのヘッダー、ツールチップ、お知らせ */
+  --font-size-small: 12px;
+  /* 列見出し、今日の日付 */
+  --font-weight-strong: bold;
 
+  /* ---- 色 ---- */
   --text-color: #222;
   --surface-color: #fff;
   --toolbar-color: #f6f7f9;
@@ -15,8 +32,6 @@
   --bar-border-color: #e0b400;
   --bar-selected-color: #ffc928;
   --bar-selected-border-color: #b07d00;
-  /* バーの左右端の「つかむと伸縮する」幅 */
-  --bar-handle-width: 6px;
   --tooltip-color: #333;
   --tooltip-text-color: #fff;
   --focus-color: #1a73e8;
@@ -28,7 +43,56 @@
   --notice-border-color: #f0b25a;
   --notice-text-color: #8a4b00;
 
-  font-family: system-ui, -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+  /* ---- 線 ---- */
+  /* 縦罫線・列見出しの区切りなどの線の太さ */
+  --grid-line-width: 1px;
+  /* 行と行の間の横罫線の種類 */
+  --row-line-style: dotted;
+  /* 固定された左ペインの右端の区切り線の太さ */
+  --pane-divider-width: 2px;
+  /* 今いるセル・編集中・エラーの枠の太さ */
+  --focus-ring-width: 2px;
+  --bar-border-width: 1px;
+  --bar-selected-border-width: 2px;
+  /* 表示範囲の外に続いているバーの、切れている側の枠線 */
+  --bar-clipped-border-style: dashed;
+  /* 今日の目印(縦線)の太さと濃さ */
+  --today-line-width: 2px;
+  --today-line-opacity: 0.35;
+
+  /* ---- 角丸 ---- */
+  /* バー・ツールチップ・お知らせの角丸 */
+  --radius-small: 3px;
+
+  /* ---- 影 ---- */
+  /* ドラッグ中のバー(少し浮いて見せる) */
+  --shadow-dragging: 0 2px 6px rgb(0 0 0 / 0.25);
+  /* 編集中のセル */
+  --shadow-editing: 0 1px 4px rgb(0 0 0 / 0.2);
+
+  /* ---- 余白・位置 ---- */
+  --toolbar-height: 44px;
+  --toolbar-padding-x: 12px;
+  --toolbar-gap: 16px;
+  /* ツールバーの入力欄と、その見出しの間隔 */
+  --field-gap: 6px;
+  /* 左ペインのセル・列見出しの左右の余白 */
+  --cell-padding-x: 6px;
+  /* 列見出しの文字と下の線の間隔 */
+  --header-label-padding-bottom: 4px;
+  /* カレンダーの月の見出し(「2026年10月」)の左右の余白 */
+  --month-label-padding-x: 4px;
+  /* バーと行の上下の隙間(横罫線と重ならないように) */
+  --bar-inset-y: 4px;
+  /* バーの左右端の「つかむと伸縮する」幅 */
+  --bar-handle-width: 6px;
+  /* ツールチップとバーの間隔 */
+  --tooltip-offset: 6px;
+  --tooltip-padding: 2px 6px;
+  /* お知らせ・開発中表示の内側の余白 */
+  --badge-padding: 2px 8px;
+
+  font-family: var(--font-family);
   color: var(--text-color);
   background: var(--surface-color);
 }
