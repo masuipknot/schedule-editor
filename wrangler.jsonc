@@ -2,9 +2,10 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   // Cloudflare 上の Worker 名。ダッシュボードで GitHub 連携するときの名前と一致させる
   "name": "schedule-editor",
-  // Workers の実行環境の「どの時点の動作に合わせるか」。手元の wrangler が対応している日付までしか指定できない
-  // (新しすぎると npm run dev / preview が起動しない)。wrangler を更新したときに見直す
-  "compatibility_date": "2026-10-19",
+  // Workers の実行環境の「どの時点の動作に合わせるか」。手元の実行環境(workerd)が対応している日付までしか
+  // 指定できない(新しすぎると npm run dev / preview が起動しない)。wrangler や @cloudflare/vite-plugin を
+  // 更新したときに見直す。2026-11-10 は @cloudflare/vite-plugin 1.69.1 に含まれる workerd 1.20261110 の日付
+  "compatibility_date": "2026-11-10",
   // schedule-editor.<アカウント>.workers.dev で公開する
   "workers_dev": true,
   // main 以外のブランチや各バージョンごとのプレビュー URL は作らない
