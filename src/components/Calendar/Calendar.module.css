@@ -1,8 +1,13 @@
-/* ---- ヘッダー(月 / 日 / 曜日) ---- */
+/* ---- ヘッダー(月 / 曜日・日付) ---- */
 
 .header {
   display: flex;
   flex-direction: column;
+  /* 左ペインの列見出しと高さをそろえる(下線の分も含めて 行の高さ × 3) */
+  box-sizing: border-box;
+  height: var(--header-height);
+  background: var(--header-bg-color);
+  border-bottom: var(--grid-line-width) solid var(--grid-line-strong-color);
 }
 
 .headerRow {
@@ -10,22 +15,24 @@
   height: var(--row-height);
 }
 
-.monthCell,
-.dayCell {
+.monthCell {
   flex: none;
   box-sizing: border-box;
   height: var(--row-height);
   line-height: var(--row-height);
-  border-right: var(--grid-line-width) solid var(--grid-line-color);
-  border-bottom: var(--grid-line-width) solid var(--grid-line-color);
+  /* 月の始まりに区切り線 */
+  border-left: var(--grid-line-width) solid var(--grid-line-strong-color);
   font-size: var(--font-size-small);
+  font-weight: var(--font-weight-strong);
   white-space: nowrap;
-  overflow: hidden;
-}
-
-.monthCell {
   /* 月の途中までスクロールしても月名が見えるように、ラベルを左ペインの右隣に貼り付ける */
   overflow: visible;
+}
+
+/* 曜日・日付の段(月の段の残りの高さ。2段分から下線の分を引いた高さになる) */
+.dayRow {
+  display: flex;
+  flex: 1;
 }
 
 .monthLabel {
@@ -35,12 +42,29 @@
 }
 
 .dayCell {
+  flex: none;
+  box-sizing: border-box;
   width: var(--day-width);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-size: var(--font-size-small);
+}
+
+.weekday {
+  font-size: var(--font-size-weekday);
+  color: var(--muted-text-color);
 }
 
 .dayOff {
   background: var(--day-off-color);
+}
+
+/* 土日祝の日付は控えめな色(曜日は元から控えめな色) */
+.dayCell.dayOff .dayNumber {
+  color: var(--muted-text-color);
 }
 
 .today {
@@ -61,7 +85,12 @@
   bottom: 0;
   width: var(--day-width);
   box-sizing: border-box;
-  border-right: var(--grid-line-width) solid var(--grid-line-color);
+  /* 各日の左側に縦線。週の始まり(月曜)だけ少し濃くする(.weekStart) */
+  border-left: var(--grid-line-width) solid var(--grid-line-color);
+}
+
+.weekStart {
+  border-left-color: var(--grid-line-strong-color);
 }
 
 /* 今日の目印。列の中央に細い縦線を引く */

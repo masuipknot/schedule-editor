@@ -6,7 +6,11 @@ type Props = {
   days: CalendarDay[]
 }
 
-/** カレンダーのヘッダー3段(月 / 日 / 曜日) */
+/**
+ * カレンダーのヘッダー。1段目が「月」、2〜3段目が各日の「曜日(上)・日付(下)」。
+ * 曜日と日付を1つのセルにまとめたのは、日ごとの見出しを1つの塊として読めるようにするため
+ * (高さは 行の高さ × 3 のままなので、固定表示やドラッグ判定には影響しない)
+ */
 export function CalendarHeader({ days }: Props) {
   const months = groupByMonth(days)
 
@@ -27,21 +31,16 @@ export function CalendarHeader({ days }: Props) {
           </div>
         ))}
       </div>
-      <div className={styles.headerRow}>
+      <div className={styles.dayRow}>
         {days.map((d) => (
-          <DayCell key={d.date} day={d} label={String(getYmdParts(d.date).day)} />
-        ))}
-      </div>
-      <div className={styles.headerRow}>
-        {days.map((d) => (
-          <DayCell key={d.date} day={d} label={weekdayJa(d.date)} />
+          <DayCell key={d.date} day={d} />
         ))}
       </div>
     </div>
   )
 }
 
-function DayCell({ day, label }: { day: CalendarDay; label: string }) {
+function DayCell({ day }: { day: CalendarDay }) {
   const className = [styles.dayCell, day.dayOff && styles.dayOff, day.isToday && styles.today]
     .filter(Boolean)
     .join(' ')
@@ -49,7 +48,8 @@ function DayCell({ day, label }: { day: CalendarDay; label: string }) {
   const title = day.holiday ? `${formatYmdSlash(day.date)} ${day.holiday}` : undefined
   return (
     <div className={className} title={title}>
-      {label}
+      <span className={styles.weekday}>{weekdayJa(day.date)}</span>
+      <span className={styles.dayNumber}>{getYmdParts(day.date).day}</span>
     </div>
   )
 }

@@ -29,7 +29,7 @@
   z-index: 3;
   flex: none;
   width: var(--left-pane-width);
-  background: var(--surface-color);
+  background: var(--header-bg-color);
 }
 
 /* ---- 下段: 左ペイン + カレンダー本体 ---- */

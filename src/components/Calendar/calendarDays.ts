@@ -1,4 +1,4 @@
-import { addDays, getYmdParts, today, type Ymd } from '../../lib/date'
+import { addDays, dayOfWeek, getYmdParts, today, type Ymd } from '../../lib/date'
 import { holidayName, isDayOff } from '../../lib/holiday'
 import type { ViewRange } from '../../state/types'
 
@@ -11,6 +11,8 @@ export type CalendarDay = {
   dayOff: boolean
   holiday: string | null
   isToday: boolean
+  /** 週の始まり(月曜)か。縦線を少し濃くして週の区切りを分かりやすくする */
+  weekStart: boolean
 }
 
 export function buildCalendarDays(view: ViewRange): CalendarDay[] {
@@ -23,6 +25,7 @@ export function buildCalendarDays(view: ViewRange): CalendarDay[] {
       dayOff: isDayOff(date),
       holiday: holidayName(date),
       isToday: date === todayYmd,
+      weekStart: dayOfWeek(date) === 1,
     }
   })
 }

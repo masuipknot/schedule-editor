@@ -22,13 +22,20 @@
   display: flex;
   align-items: flex-end;
   padding: 0 var(--cell-padding-x) var(--header-label-padding-bottom);
-  border-right: var(--grid-line-width) solid var(--grid-line-color);
-  border-bottom: var(--grid-line-width) solid var(--grid-line-color);
+  border-bottom: var(--grid-line-width) solid var(--grid-line-strong-color);
+  background: var(--header-bg-color);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-strong);
+  color: var(--muted-text-color);
   /* クリックで列全体を選べることを示す */
   cursor: pointer;
   user-select: none;
+}
+
+/* 開始日・終了日の見出しは、下の日付に合わせて右寄せ。列の境目に縦線 */
+.headerCell.dateCol {
+  justify-content: flex-end;
+  border-left: var(--grid-line-width) solid var(--grid-line-color);
 }
 
 /* 列全体が選ばれているときの見出し */
@@ -45,7 +52,6 @@
   margin: 0;
   padding: 0 var(--cell-padding-x);
   border: none;
-  border-right: var(--grid-line-width) solid var(--grid-line-color);
   border-bottom: var(--grid-line-width) var(--row-line-style) var(--grid-line-color);
   background: transparent;
   font: inherit;
@@ -83,7 +89,11 @@
   cursor: text;
 }
 
+/* 日付のセル: 右寄せ・控えめな色の少し小さい文字。列の境目に縦線 */
 .dateCell {
+  border-left: var(--grid-line-width) solid var(--grid-line-color);
+  font-size: var(--font-size-small);
+  color: var(--muted-text-color);
   text-align: right;
 }
 

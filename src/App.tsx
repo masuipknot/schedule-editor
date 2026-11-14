@@ -22,12 +22,23 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      <header className={styles.toolbar}>
+      {/* 1段目: アプリ名と、画面全体に関わる表示 */}
+      <header className={styles.header}>
         <h1 className={styles.title}>スケジュール編集</h1>
+        {/* 保存機能(Phase 6)ができるまでの注意書き。Phase 6 で
+            「データはこのブラウザ内にのみ保存されます」の表示に差し替える */}
+        <p className={styles.devNotice} role="note">
+          開発中:データは保存されません
+        </p>
+      </header>
+
+      {/* 2段目: 表を操作するための道具(Phase 6 で「行を追加」「すべて消去」のボタンをここに置く) */}
+      <div className={styles.toolbar}>
         <label className={styles.field}>
           表示開始日
           {/* type="date" の値は "YYYY-MM-DD" 文字列なので、アプリ内の形式のまま受け渡しできる */}
           <input
+            className={styles.dateInput}
             type="date"
             value={state.view.start}
             onChange={(e) => {
@@ -41,14 +52,15 @@ export default function App() {
             {notice}
           </p>
         )}
-        {/* 保存機能(Phase 6)ができるまでの注意書き。Phase 6 で
-            「データはこのブラウザ内にのみ保存されます」の表示に差し替える */}
-        <p className={styles.devNotice} role="note">
-          開発中:データは保存されません
-        </p>
-      </header>
+      </div>
+
       <main className={styles.main}>
-        <ScheduleGrid state={state} dispatch={dispatch} onNotice={setNotice} />
+        {/* 表は白いカードに入れる。枠線・角丸・影はこの外側の囲みに付け、
+            中のスクロールする要素(ScheduleGrid)には付けない。
+            スクロールする要素に枠線があると、ドラッグ判定が読む左端の位置が枠線の分ずれるため(SPEC 3章) */}
+        <div className={styles.card}>
+          <ScheduleGrid state={state} dispatch={dispatch} onNotice={setNotice} />
+        </div>
       </main>
     </div>
   )

@@ -4,9 +4,12 @@
   display: flex;
   flex-direction: column;
   height: 100dvh;
+  background: var(--app-bg-color);
 }
 
-.toolbar {
+/* ---- 1段目: ヘッダー ---- */
+
+.header {
   flex: none;
   display: flex;
   align-items: center;
@@ -20,37 +23,77 @@
 .title {
   margin: 0;
   font-size: var(--font-size-title);
+  font-weight: var(--font-weight-strong);
+}
+
+.devNotice {
+  /* ヘッダーの右端に寄せる */
+  margin: 0 0 0 auto;
+  padding: var(--badge-padding);
+  border: var(--grid-line-width) solid var(--notice-border-color);
+  border-radius: var(--radius-pill);
+  background: var(--notice-color);
+  color: var(--notice-text-color);
+  font-size: var(--font-size-small);
+}
+
+/* ---- 2段目: ツールバー ---- */
+
+.toolbar {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--toolbar-gap);
+  padding: var(--toolbar-row-padding-y) var(--toolbar-padding-x);
 }
 
 .field {
   display: flex;
   align-items: center;
   gap: var(--field-gap);
+  font-size: var(--font-size-small);
+  color: var(--muted-text-color);
+}
+
+.dateInput {
+  height: var(--control-height);
+  box-sizing: border-box;
+  padding: 0 var(--control-padding-x);
+  border: var(--grid-line-width) solid var(--control-border-color);
+  border-radius: var(--radius-control);
+  background: var(--surface-color);
+  font: inherit;
   font-size: var(--font-size-body);
+  color: var(--text-color);
 }
 
 .notice {
   margin: 0;
   padding: var(--badge-padding);
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-pill);
   background: var(--tooltip-color);
   color: var(--tooltip-text-color);
   font-size: var(--font-size-small);
 }
 
-.devNotice {
-  /* ツールバーの右端に寄せる */
-  margin: 0 0 0 auto;
-  padding: var(--badge-padding);
-  border: var(--grid-line-width) solid var(--notice-border-color);
-  border-radius: var(--radius-small);
-  background: var(--notice-color);
-  color: var(--notice-text-color);
-  font-size: var(--font-size-small);
-}
+/* ---- 表のカード ---- */
 
 .main {
   flex: 1;
   /* flex の子は既定で中身より小さくならないため、0 にしないと高さが画面からはみ出す */
   min-height: 0;
+  padding: 0 var(--toolbar-padding-x) var(--toolbar-padding-x);
+}
+
+/* 白いカード。枠線・角丸・影はここに付ける(中のスクロールする要素には付けない) */
+.card {
+  height: 100%;
+  box-sizing: border-box;
+  border: var(--grid-line-width) solid var(--grid-line-strong-color);
+  border-radius: var(--radius-panel);
+  background: var(--surface-color);
+  box-shadow: var(--shadow-panel);
+  /* 角丸の外にスクロールの中身がはみ出さないように */
+  overflow: hidden;
 }

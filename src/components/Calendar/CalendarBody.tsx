@@ -66,7 +66,9 @@ export function CalendarBody({
       {days.map((d) => (
         <div
           key={d.date}
-          className={[styles.stripe, d.dayOff && styles.dayOff].filter(Boolean).join(' ')}
+          className={[styles.stripe, d.dayOff && styles.dayOff, d.weekStart && styles.weekStart]
+            .filter(Boolean)
+            .join(' ')}
           style={{ left: `calc(var(--day-width) * ${d.index})` }}
         >
           {d.isToday && <div className={styles.todayLine} />}

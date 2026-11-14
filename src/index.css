@@ -19,13 +19,21 @@
   --font-size-body: 13px;
   /* 列見出し、カレンダーのヘッダー、ツールチップ、お知らせ */
   --font-size-small: 12px;
+  /* カレンダーのヘッダーの曜日 */
+  --font-size-weekday: 10px;
   /* アプリ名・列見出し・今日の日付 */
   --font-weight-strong: 600;
 
   /* ---- 色 ---- */
+  /* 画面の地(表のカードの外側) */
+  --app-bg-color: #f4f5f7;
   --text-color: #1f2328;
+  /* 控えめな文字(日付・見出し・曜日) */
+  --muted-text-color: #5b6472;
   --surface-color: #ffffff;
   --toolbar-color: #ffffff;
+  /* 列見出し・カレンダーのヘッダーの地 */
+  --header-bg-color: #fafbfc;
   --grid-line-color: #eceef1;
   --grid-line-strong-color: #dfe3e8;
   /* 土日祝の背景 */
@@ -42,6 +50,8 @@
   /* 左ペインで範囲選択しているセルの背景 */
   --selection-color: #e8f0fe;
   --error-color: #cf222e;
+  /* 入力欄の枠 */
+  --control-border-color: #d5d9e0;
   /* 「開発中」などの注意書き */
   --notice-color: #fff8e5;
   --notice-border-color: #e6b44d;
@@ -68,19 +78,32 @@
   /* ---- 角丸 ---- */
   /* バー・ツールチップ・お知らせの角丸 */
   --radius-small: 4px;
+  /* 入力欄 */
+  --radius-control: 6px;
+  /* 表のカード */
+  --radius-panel: 8px;
+  /* 開発中の表示・お知らせ(両端が丸い形) */
+  --radius-pill: 999px;
 
   /* ---- 影 ---- */
   /* ドラッグ中のバー(少し浮いて見せる) */
   --shadow-dragging: 0 4px 12px rgb(15 23 42 / 0.18);
   /* 編集中のセル */
   --shadow-editing: 0 2px 8px rgb(15 23 42 / 0.15);
+  /* 表のカード */
+  --shadow-panel: 0 1px 2px rgb(15 23 42 / 0.06);
 
   /* ---- 余白・位置 ---- */
   --toolbar-height: 52px;
   --toolbar-padding-x: 20px;
   --toolbar-gap: 12px;
+  /* ツールバー(2段目)の上下の余白 */
+  --toolbar-row-padding-y: 14px;
   /* ツールバーの入力欄と、その見出しの間隔 */
   --field-gap: 8px;
+  /* 入力欄の高さと左右の余白 */
+  --control-height: 32px;
+  --control-padding-x: 12px;
   /* 左ペインのセル・列見出しの左右の余白 */
   --cell-padding-x: 10px;
   /* 列見出しの文字と下の線の間隔 */
