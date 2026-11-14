@@ -38,9 +38,21 @@
   border-left: var(--grid-line-width) solid var(--grid-line-color);
 }
 
-/* 列全体が選ばれているときの見出し */
-.headerSelected {
+/* マウスを乗せた列見出し(クリックで列全体を選べることを示す) */
+.headerCell:hover {
+  background: var(--row-hover-color);
+  color: var(--text-color);
+}
+
+/* 列全体が選ばれているときの見出し(ホバー中も、選択の色を優先する) */
+.headerCell.headerSelected {
   background: var(--selection-color);
+  color: var(--focus-color);
+}
+
+/* マウスが乗っている行。カレンダー側の同じ行もそろえて明るくする(ScheduleGrid が行番号を持つ) */
+.rowHover {
+  background: var(--row-hover-color);
 }
 
 /* ---- セル ---- */

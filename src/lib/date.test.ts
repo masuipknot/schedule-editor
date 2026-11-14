@@ -5,7 +5,7 @@ import {
   dayOfWeek,
   diffDays,
   formatMD,
-  formatRangeLabel,
+  formatDateRange,
   formatYmdSlash,
   isValidDate,
   isWeekend,
@@ -73,9 +73,9 @@ describe('その他のユーティリティ', () => {
     expect(formatYmdSlash('2026-04-01')).toBe('2026/4/1')
   })
 
-  it('期間のラベル(開始日・終了日を含めた日数)', () => {
-    expect(formatRangeLabel('2026-04-13', '2026-04-16')).toBe('4/13(月)〜4/16(木) 4日間')
-    expect(formatRangeLabel('2026-04-13', '2026-04-13')).toBe('4/13(月)〜4/13(月) 1日間')
+  it('期間の表示(曜日付き)', () => {
+    expect(formatDateRange('2026-04-13', '2026-04-16')).toBe('4/13(月)〜4/16(木)')
+    expect(formatDateRange('2026-04-13', '2026-04-13')).toBe('4/13(月)〜4/13(月)')
   })
 })
 

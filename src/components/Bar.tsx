@@ -12,7 +12,7 @@ type Props = {
   selected: boolean
   /** ドラッグ中か(見た目を変える) */
   dragging: boolean
-  /** ドラッグ中に出す「4/13(月)〜4/16(木) 4日間」のような説明。なければ出さない */
+  /** ドラッグ中に出す「4/13(月)〜4/16(木) 4営業日」のような説明。なければ出さない */
   tooltip: string | null
   onPointerDown: (e: PointerEvent) => void
 }

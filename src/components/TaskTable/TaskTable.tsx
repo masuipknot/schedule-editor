@@ -42,6 +42,9 @@ export function TaskTableHeader({ selection }: { selection: CellSelection }) {
 type Props = {
   tasks: Task[]
   selection: CellSelection
+  /** マウスが乗っている行(なければ null)。カレンダー側と同じ行を明るくするために親から受け取る */
+  hoverRow: number | null
+  onHoverRow: (row: number | null) => void
 }
 
 /**
@@ -50,11 +53,22 @@ type Props = {
  * 自分では状態を持たない。キーボード・コピー/ペーストは、セルから伝わってきたイベントを
  * この外枠でまとめて受け取る
  */
-export function TaskTable({ tasks, selection }: Props) {
+export function TaskTable({ tasks, selection, hoverRow, onHoverRow }: Props) {
   return (
-    <div role="grid" aria-label="タスク一覧" {...selection.containerHandlers}>
+    <div
+      role="grid"
+      aria-label="タスク一覧"
+      {...selection.containerHandlers}
+      // 列見出しなど行のない場所へ出たら、ホバーを消す
+      onPointerLeave={() => onHoverRow(null)}
+    >
       {tasks.map((task, row) => (
-        <div key={task.id} className={styles.row} role="row">
+        <div
+          key={task.id}
+          className={[styles.row, row === hoverRow && styles.rowHover].filter(Boolean).join(' ')}
+          role="row"
+          onPointerEnter={() => onHoverRow(row)}
+        >
           {COLUMNS.map(({ col, label }) => (
             <Cell
               key={col}

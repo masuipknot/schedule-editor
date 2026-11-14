@@ -21,6 +21,8 @@
   --font-size-small: 12px;
   /* カレンダーのヘッダーの曜日 */
   --font-size-weekday: 10px;
+  /* バーの右の営業日数 */
+  --font-size-caption: 11px;
   /* アプリ名・列見出し・今日の日付 */
   --font-weight-strong: 600;
 
@@ -38,7 +40,10 @@
   --grid-line-strong-color: #dfe3e8;
   /* 土日祝の背景 */
   --day-off-color: #f6f7f9;
-  --today-color: #d93025;
+  /* 今日の日付の文字(オレンジの丸の中) */
+  --today-color: #ffffff;
+  /* 今日の日付を囲む丸 */
+  --today-badge-color: #ea7a2c;
   /* バーの色(確定デザインのブルー系) */
   --bar-color: #dbe7ff;
   --bar-border-color: #3b82f6;
@@ -52,6 +57,10 @@
   --error-color: #cf222e;
   /* 入力欄の枠 */
   --control-border-color: #d5d9e0;
+  /* マウスを乗せた行・列見出し */
+  --row-hover-color: #f6f8fa;
+  /* バーの右の営業日数(本文より少しグレー寄り) */
+  --bar-label-color: #6e7681;
   /* 「開発中」などの注意書き */
   --notice-color: #fff8e5;
   --notice-border-color: #e6b44d;
@@ -71,9 +80,6 @@
   --bar-selected-border-width: 1px;
   /* 表示範囲の外に続いているバーの、切れている側の枠線 */
   --bar-clipped-border-style: dashed;
-  /* 今日の目印(縦線)の太さと濃さ */
-  --today-line-width: 2px;
-  --today-line-opacity: 0.35;
 
   /* ---- 角丸 ---- */
   /* バー・ツールチップ・お知らせの角丸 */
@@ -114,7 +120,11 @@
   --bar-inset-y: 0px;
   /* バーの左右端の「つかむと伸縮する」幅 */
   --bar-handle-width: 6px;
+  /* バーと営業日数の間隔 */
+  --bar-label-gap: 6px;
   /* ツールチップとバーの間隔 */
+  /* 今日の丸の大きさ */
+  --today-badge-size: 20px;
   --tooltip-offset: 6px;
   --tooltip-padding: 3px 8px;
   /* お知らせ・開発中表示の内側の余白 */

@@ -1,7 +1,8 @@
 import { useState, type PointerEvent } from 'react'
 import type { DragPreview } from '../../hooks/useBarDrag'
 import { nearestLineIndex } from '../../lib/barDrag'
-import { diffDays, formatRangeLabel } from '../../lib/date'
+import { formatBusinessDays, formatDragLabel } from '../../lib/businessDays'
+import { diffDays } from '../../lib/date'
 import { ROW_HEIGHT } from '../../layout'
 import type { Task, ViewRange } from '../../state/types'
 import { Bar } from '../Bar'
@@ -17,6 +18,9 @@ type Props = {
   onBarPointerDown: (e: PointerEvent, task: Task) => void
   /** 日付のない行の空き部分を押したとき(ドラッグで新規作成する)。task は新規作成の対象の行 */
   onEmptyRowPointerDown: (e: PointerEvent, task: Task) => void
+  /** マウスが乗っている行(なければ null)。左ペインと同じ行を明るくするために親から受け取る */
+  hoverRow: number | null
+  onHoverRow: (row: number | null) => void
 }
 
 /**
@@ -34,6 +38,8 @@ export function CalendarBody({
   preview,
   onBarPointerDown,
   onEmptyRowPointerDown,
+  hoverRow,
+  onHoverRow,
 }: Props) {
   // ポインタが「新規作成できる位置」の上にあるか。カーソルを十字にするために使う
   const [hoverCreatable, setHoverCreatable] = useState(false)
@@ -60,8 +66,17 @@ export function CalendarBody({
         const task = creatableTaskAt(e)
         if (task) onEmptyRowPointerDown(e, task)
       }}
-      onPointerMove={(e) => setHoverCreatable(creatableTaskAt(e) !== null)}
-      onPointerLeave={() => setHoverCreatable(false)}
+      onPointerMove={(e) => {
+        setHoverCreatable(creatableTaskAt(e) !== null)
+        // ホバーの行は「ポインタが乗っている行」(新規作成の対象行とは違い、一番近い線ではなく行の中で決める)
+        const offsetY = e.clientY - e.currentTarget.getBoundingClientRect().top
+        const row = Math.floor(offsetY / ROW_HEIGHT)
+        onHoverRow(row >= 0 && row < tasks.length ? row : null)
+      }}
+      onPointerLeave={() => {
+        setHoverCreatable(false)
+        onHoverRow(null) // ヘッダーなど行のない場所へ出たら、ホバーを消す
+      }}
     >
       {days.map((d) => (
         <div
@@ -70,15 +85,13 @@ export function CalendarBody({
             .filter(Boolean)
             .join(' ')}
           style={{ left: `calc(var(--day-width) * ${d.index})` }}
-        >
-          {d.isToday && <div className={styles.todayLine} />}
-        </div>
+        />
       ))}
 
       {tasks.map((task, row) => (
         <div
           key={task.id}
-          className={styles.rowLine}
+          className={[styles.rowLine, row === hoverRow && styles.rowHover].filter(Boolean).join(' ')}
           style={{ top: `calc(var(--row-height) * ${row})` }}
         >
           <TaskBar
@@ -116,17 +129,30 @@ function TaskBar({ task, view, selected, preview, onPointerDown }: TaskBarProps)
   const left = Math.max(startIndex, 0)
   const right = Math.min(endIndex + 1, view.days)
   if (right <= left) return null
+  const clippedEnd = endIndex + 1 > view.days
 
   return (
-    <Bar
-      startIndex={left}
-      span={right - left}
-      clippedStart={startIndex < 0}
-      clippedEnd={endIndex + 1 > view.days}
-      selected={selected}
-      dragging={preview !== null}
-      tooltip={preview ? formatRangeLabel(start, end) : null}
-      onPointerDown={onPointerDown}
-    />
+    <>
+      <Bar
+        startIndex={left}
+        span={right - left}
+        clippedStart={startIndex < 0}
+        clippedEnd={clippedEnd}
+        selected={selected}
+        dragging={preview !== null}
+        tooltip={preview ? formatDragLabel(start, end) : null}
+        onPointerDown={onPointerDown}
+      />
+      {/* バーの右に営業日数。右端が表示範囲の外なら、置く場所がないので出さない。
+          ドラッグ中は start / end がプレビューの日付なので、その場で数え直される(SPEC 5章) */}
+      {!clippedEnd && (
+        <span
+          className={styles.barLabel}
+          style={{ left: `calc(var(--day-width) * ${right} + var(--bar-label-gap))` }}
+        >
+          {formatBusinessDays(start, end)}
+        </span>
+      )}
+    </>
   )
 }

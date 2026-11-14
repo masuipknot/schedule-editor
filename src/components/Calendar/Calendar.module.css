@@ -67,7 +67,16 @@
   color: var(--muted-text-color);
 }
 
-.today {
+/* 今日の日付を囲む丸。今日が土日祝でも、この色を優先する
+   (「.dayCell.dayOff .dayNumber」より強く指定するため、クラスを重ねている) */
+.dayCell .dayNumber.todayBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--today-badge-size);
+  height: var(--today-badge-size);
+  border-radius: var(--radius-pill);
+  background: var(--today-badge-color);
   color: var(--today-color);
   font-weight: var(--font-weight-strong);
 }
@@ -93,19 +102,6 @@
   border-left-color: var(--grid-line-strong-color);
 }
 
-/* 今日の目印。列の中央に細い縦線を引く */
-.todayLine {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: var(--today-line-width);
-  /* 線の太さの半分だけ左へずらして、列の中央にそろえる */
-  margin-left: calc(var(--today-line-width) / -2);
-  background: var(--today-color);
-  opacity: var(--today-line-opacity);
-}
-
 /* 行ごとの横罫線(点線)。バーはこの要素の中に絶対配置する */
 .rowLine {
   position: absolute;
@@ -119,4 +115,21 @@
 /* ポインタが新規作成できる位置にあるとき(CalendarBody の hoverCreatable) */
 .creatable {
   cursor: crosshair;
+}
+
+/* バーの右の営業日数。マウス操作の対象にしない(クリックやドラッグは下のカレンダーに届く。SPEC 7-1) */
+.barLabel {
+  position: absolute;
+  top: 0;
+  line-height: var(--row-height);
+  font-size: var(--font-size-caption);
+  color: var(--bar-label-color);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* マウスが乗っている行。左ペインの同じ行もそろえて明るくする(ScheduleGrid が行番号を持つ) */
+.rowHover {
+  background: var(--row-hover-color);
 }

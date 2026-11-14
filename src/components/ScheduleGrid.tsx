@@ -1,4 +1,4 @@
-import { useMemo, useRef, type Dispatch } from 'react'
+import { useMemo, useRef, useState, type Dispatch } from 'react'
 import { useBarDrag } from '../hooks/useBarDrag'
 import { useBarSelection } from '../hooks/useBarSelection'
 import { useCellSelection } from '../hooks/useCellSelection'
@@ -36,8 +36,24 @@ export function ScheduleGrid({ state, dispatch, onNotice }: Props) {
   // 左ペインのセル選択・編集・コピー/ペースト。列見出し(角)と本体の両方で使うので、ここで持つ
   const cellSelection = useCellSelection({ tasks, viewStart: view.start, dispatch, onNotice })
 
+  // マウスが乗っている行。左ペインとカレンダーは別々の要素なので、CSS の :hover だけでは
+  // 同じ行をそろえて明るくできない。そこで行番号をここで持ち、両方に渡す
+  const [hoverRow, setHoverRow] = useState<number | null>(null)
+  function handleHoverRow(row: number | null) {
+    // ドラッグ中は変えない(ドラッグしている行の見た目が途中で変わらないように。SPEC 8章)
+    if (preview) return
+    setHoverRow(row)
+  }
+
   return (
-    <div ref={scrollRef} className={styles.scroll} style={layoutCssVars} {...containerHandlers}>
+    <div
+      ref={scrollRef}
+      className={styles.scroll}
+      style={layoutCssVars}
+      {...containerHandlers}
+      // 表の外へポインタが出たら、ホバーを消す
+      onPointerLeave={() => handleHoverRow(null)}
+    >
       <div
         className={styles.inner}
         style={{ width: `calc(var(--left-pane-width) + var(--day-width) * ${view.days})` }}
@@ -50,7 +66,12 @@ export function ScheduleGrid({ state, dispatch, onNotice }: Props) {
         </div>
         <div className={styles.bodyArea}>
           <div className={styles.leftPane}>
-            <TaskTable tasks={tasks} selection={cellSelection} />
+            <TaskTable
+              tasks={tasks}
+              selection={cellSelection}
+              hoverRow={hoverRow}
+              onHoverRow={handleHoverRow}
+            />
           </div>
           <div className={styles.calendar}>
             <CalendarBody
@@ -61,6 +82,8 @@ export function ScheduleGrid({ state, dispatch, onNotice }: Props) {
               preview={preview}
               onBarPointerDown={handleBarPointerDown}
               onEmptyRowPointerDown={handleEmptyRowPointerDown}
+              hoverRow={hoverRow}
+              onHoverRow={handleHoverRow}
             />
           </div>
         </div>

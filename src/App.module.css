@@ -68,6 +68,13 @@
   color: var(--text-color);
 }
 
+/* キーボードやクリックで入力中であることが分かるように、青い枠と薄い外枠 */
+.dateInput:focus {
+  outline: none;
+  border-color: var(--focus-color);
+  box-shadow: 0 0 0 3px var(--selection-color);
+}
+
 .notice {
   margin: 0;
   padding: var(--badge-padding);

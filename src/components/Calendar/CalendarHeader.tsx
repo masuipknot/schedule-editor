@@ -41,15 +41,16 @@ export function CalendarHeader({ days }: Props) {
 }
 
 function DayCell({ day }: { day: CalendarDay }) {
-  const className = [styles.dayCell, day.dayOff && styles.dayOff, day.isToday && styles.today]
-    .filter(Boolean)
-    .join(' ')
+  const className = [styles.dayCell, day.dayOff && styles.dayOff].filter(Boolean).join(' ')
   // 祝日はマウスを乗せると祝日名を表示。title 属性ならブラウザ標準のツールチップで済む
   const title = day.holiday ? `${formatYmdSlash(day.date)} ${day.holiday}` : undefined
   return (
     <div className={className} title={title}>
       <span className={styles.weekday}>{weekdayJa(day.date)}</span>
-      <span className={styles.dayNumber}>{getYmdParts(day.date).day}</span>
+      {/* 今日は日付を丸で囲む(列の色は変えない。SPEC 5章) */}
+      <span className={[styles.dayNumber, day.isToday && styles.todayBadge].filter(Boolean).join(' ')}>
+        {getYmdParts(day.date).day}
+      </span>
     </div>
   )
 }
