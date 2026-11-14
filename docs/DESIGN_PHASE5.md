@@ -1,6 +1,6 @@
 # Phase 5 デザイン作業の記録
 
-最終更新: 2026-11-05
+最終更新: 2026-11-14
 
 Phase 5(デザイン適用)のために Claude のデザインキャンバスで作った案と、決まったことの記録。
 アプリのコードにはまだ反映していない(handoff bundle を受け取ってから、SPEC 10章の手順で反映する)。
@@ -12,107 +12,139 @@ Phase 5(デザイン適用)のために Claude のデザインキャンバスで
 
 | アートボード | 内容 |
 |---|---|
-| 画面(トークン案A) | アプリの画面全体。採用したトークンを反映済み |
-| UI 状態の一覧(トークン案A) | `docs/UI_STATES.md` の全状態。採用したトークンを反映済み |
+| **画面(確定デザイン)** | アプリの画面全体。確定トークンで描いたもの |
+| **UI 状態の一覧(確定デザイン)** | 画面の全要素と状態。確定トークンで描いたもの |
+| **確定トークン(パターン1)** | 確定した全トークンを「現在値 → 確定値」と「変更 / 追加 / 廃止 / 同じ」で一覧にしたもの |
 | CSS 変数(現在のアプリの値) | 比較用。今のアプリ(`src/index.css`)の値のまま |
-| トークン案A: クリア(採用) | 採用案。プレビュー、数字の書体の比較、「現在値 → 案の値」の表 |
-| トークン案B: スプレッドシート準拠 | 不採用(比較用に残している) |
-| トークン案C: あたたかい紙 | 不採用(比較用に残している) |
+| モダン化パターン1: 業務ツール型 | 確定デザインの元になった案(修正済み) |
+| モダン化パターン2: タイムライン型 | 不採用(比較用) |
+| トークン案A / B / C | 最初に作った色・余白の案(過去の案。比較用) |
 
-## 決まったこと(2026-11-05)
+## 決まったことの経緯
 
-1. トークン案A(クリア)を採用: 白基調、青系のバー、薄いグレーの休日、実線の罫線
-2. 修正
-   - 角丸 `--radius-small` は 3px(案A当初の 6px から控えめに)
-   - 書体は、日本語を Noto Sans JP、数字・英字を Inter(候補: Inter / Roboto / IBM Plex Sans から Inter を推奨・採用)。数字の幅をそろえる(tabular-nums)
-   - 今日の目印は赤い縦線をやめ、今日の列を薄い暖色で塗る
-3. 寸法(`src/layout.ts` 管理の行の高さ・列幅)は変えない
+1. 2026-11-05: トークン案A(クリア)を採用。角丸 3px、書体は Inter(数字・英字)+ Noto Sans JP(日本語)、今日の列を暖色に
+2. 2026-11-14: 見た目がプロトタイプから大きく変わっていなかったため、Backlog / Asana のような業務ツールの雰囲気で2パターンを作成し、**パターン1(業務ツール型、行の高さ 22px のまま)を採用**。修正内容:
+   - 色はブルー系(右上の「開発中」の表示の色はそのまま)
+   - アプリ名は 20px、左のアイコンはなし
+   - バーはセルの高さいっぱい(上下の隙間 0)、角丸は少しだけ(4px)
+   - バーの右には項目名ではなく **営業日数**(例: 「4営業日」)。文字は少しグレー寄り
+   - 今日の目印は、列を塗るのをやめ、**ヘッダーの日付をオレンジの丸で囲むだけ**
+   - 左ペインの「開始日」「終了日」の列に縦線を入れる
+3. 確定にあたって、パターン1で直接書いていた値(見出しの地の色、行のホバー色、入力欄の枠の色など)をトークンに整理した。土日の曜日の文字は、薄いグレーだと読みにくい(背景との明るさの差が基準未満)ため、控えめな文字色にして、代わりにヘッダーの土日祝のセルも休日色で塗るようにした
+4. 寸法(`src/layout.ts` 管理の行の高さ 22px・1日の列幅 26px・列幅 250px / 85px)は変えない
 
-## 採用したトークンの値
+## 確定トークン
 
-変数名は `src/index.css` と同じ。「現在」は今のアプリの値。
+変数名は `src/index.css` と同じ。「現在」は今のアプリの値。区分: 変更 / 追加 / 廃止 / 同じ
 
 ### 文字
 
-| 変数 | 現在 | 採用 |
-|---|---|---|
-| `--font-family` | system-ui ほか | `'Inter', 'Noto Sans JP', sans-serif` |
-| `--font-variant-numeric` | (なし) | `tabular-nums` **(追加)** |
-| `--font-size-title` | 15px | 15px |
-| `--font-size-body` | 13px | 13px |
-| `--font-size-small` | 12px | 12px |
-| `--font-weight-strong` | bold | 600 |
+| 変数 | 現在 | 確定 | 区分 | 用途 |
+|---|---|---|---|---|
+| `--font-family` | system-ui ほか | `'Inter', 'Noto Sans JP', sans-serif` | 変更 | 数字・英字は Inter、日本語は Noto Sans JP |
+| `--font-variant-numeric` | — | `tabular-nums` | 追加 | 数字の幅をそろえる |
+| `--font-size-title` | 15px | 20px | 変更 | アプリ名 |
+| `--font-size-body` | 13px | 13px | 同じ | セル・ボタン・入力欄 |
+| `--font-size-small` | 12px | 12px | 同じ | 見出し・日付・お知らせ |
+| `--font-size-caption` | — | 11px | 追加 | バーの右の営業日数 |
+| `--font-size-weekday` | — | 10px | 追加 | カレンダーの曜日 |
+| `--font-weight-strong` | bold | 600 | 変更 | アプリ名・見出し・今日 |
+| `--font-weight-medium` | — | 500 | 追加 | 主ボタンの文字 |
 
 ### 色
 
-| 変数 | 現在 | 採用 |
-|---|---|---|
-| `--text-color` | #222 | #1f2328 |
-| `--surface-color` | #fff | #ffffff |
-| `--toolbar-color` | #f6f7f9 | #ffffff |
-| `--grid-line-color` | #d9d9d9 | #e5e7eb |
-| `--grid-line-strong-color` | #b5b5b5 | #c9ced6 |
-| `--day-off-color` | #cccccc | #f1f3f5 |
-| `--today-color` | #d93025 | #b54708(今日の日付の文字) |
-| `--today-bg-color` | (なし) | #fff1e0 **(追加。今日の列の背景)** |
-| `--bar-color` | #ffd966 | #cfe1ff |
-| `--bar-border-color` | #e0b400 | #5b8def |
-| `--bar-selected-color` | #ffc928 | #a9c8ff |
-| `--bar-selected-border-color` | #b07d00 | #1f5fd1 |
-| `--tooltip-color` | #333 | #1f2328 |
-| `--tooltip-text-color` | #fff | #ffffff |
-| `--focus-color` | #1a73e8 | #1f6feb |
-| `--selection-color` | #e8f0fe | #e7f0ff |
-| `--error-color` | #d93025 | #cf222e |
-| `--notice-color` | #fff4e5 | #fff8e5 |
-| `--notice-border-color` | #f0b25a | #e6b44d |
-| `--notice-text-color` | #8a4b00 | #7a4e00 |
+| 変数 | 現在 | 確定 | 区分 | 用途 |
+|---|---|---|---|---|
+| `--app-bg-color` | — | #f4f5f7 | 追加 | 画面の地(表のカードの外側) |
+| `--text-color` | #222 | #1f2328 | 変更 | 文字 |
+| `--muted-text-color` | — | #5b6472 | 追加 | 控えめな文字(日付・見出し・曜日) |
+| `--surface-color` | #fff | #ffffff | 同じ | 表のカード・編集中のセル |
+| `--toolbar-color` | #f6f7f9 | #ffffff | 変更 | ヘッダーの地 |
+| `--header-bg-color` | — | #fafbfc | 追加 | 列見出し・カレンダーのヘッダーの地 |
+| `--grid-line-color` | #d9d9d9 | #eceef1 | 変更 | 罫線 |
+| `--grid-line-strong-color` | #b5b5b5 | #dfe3e8 | 変更 | カードの枠・区切り線・週の区切り |
+| `--day-off-color` | #cccccc | #f6f7f9 | 変更 | 土日祝の背景(本体とヘッダー) |
+| `--row-hover-color` | — | #f6f8fa | 追加 | マウスを乗せた行・ボタンのホバー |
+| `--accent-color` | — | #2563eb | 追加 | 主ボタン(行を追加) |
+| `--accent-hover-color` | — | #1d4ed8 | 追加 | 主ボタンのホバー |
+| `--accent-text-color` | — | #ffffff | 追加 | 主ボタンの文字 |
+| `--control-border-color` | — | #d5d9e0 | 追加 | 入力欄・副ボタンの枠 |
+| `--today-color` | #d93025 | #ffffff | 変更 | 今日の日付の文字(オレンジの丸の中) |
+| `--today-badge-color` | — | #ea7a2c | 追加 | 今日の日付を囲む丸 |
+| `--bar-color` | #ffd966 | #dbe7ff | 変更 | バー |
+| `--bar-border-color` | #e0b400 | #3b82f6 | 変更 | バーの枠 |
+| `--bar-selected-color` | #ffc928 | #3b82f6 | 変更 | 選択中のバー |
+| `--bar-selected-border-color` | #b07d00 | #1d4ed8 | 変更 | 選択中のバーの枠 |
+| `--bar-label-color` | — | #6e7681 | 追加 | バーの右の営業日数 |
+| `--tooltip-color` | #333 | #1f2328 | 変更 | ツールチップ・お知らせの地 |
+| `--tooltip-text-color` | #fff | #ffffff | 同じ | ツールチップ・お知らせの文字 |
+| `--focus-color` | #1a73e8 | #2563eb | 変更 | 選択中・編集中のセルの枠 |
+| `--selection-color` | #e8f0fe | #e8f0fe | 同じ | 範囲選択・列選択の背景 |
+| `--error-color` | #d93025 | #cf222e | 変更 | 解釈できない日付の赤枠 |
+| `--notice-color` | #fff4e5 | #fff8e5 | 変更 | 開発中表示の地 |
+| `--notice-border-color` | #f0b25a | #e6b44d | 変更 | 開発中表示の枠 |
+| `--notice-text-color` | #8a4b00 | #7a4e00 | 変更 | 開発中表示の文字 |
 
 ### 線・角丸・影
 
-| 変数 | 現在 | 採用 |
-|---|---|---|
-| `--grid-line-width` | 1px | 1px |
-| `--row-line-style` | dotted | solid |
-| `--pane-divider-width` | 2px | 1px |
-| `--focus-ring-width` | 2px | 2px |
-| `--bar-border-width` | 1px | 1px |
-| `--bar-selected-border-width` | 2px | 2px |
-| `--bar-clipped-border-style` | dashed | dashed |
-| `--today-line-width` | 2px | **(廃止)** |
-| `--today-line-opacity` | 0.35 | **(廃止)** |
-| `--radius-small` | 3px | 3px |
-| `--shadow-dragging` | 0 2px 6px rgb(0 0 0 / 0.25) | 0 4px 12px rgb(15 23 42 / 0.18) |
-| `--shadow-editing` | 0 1px 4px rgb(0 0 0 / 0.2) | 0 2px 8px rgb(15 23 42 / 0.15) |
+| 変数 | 現在 | 確定 | 区分 | 用途 |
+|---|---|---|---|---|
+| `--grid-line-width` | 1px | 1px | 同じ | 線の太さ |
+| `--row-line-style` | dotted | solid | 変更 | 行の間の横罫線 |
+| `--pane-divider-width` | 2px | 1px | 変更 | 左ペインの区切り |
+| `--focus-ring-width` | 2px | 2px | 同じ | 選択・編集・エラーの枠 |
+| `--bar-border-width` | 1px | 1px | 同じ | バーの枠 |
+| `--bar-selected-border-width` | 2px | 1px | 変更 | 選択中のバーの枠(塗りで区別するので細く) |
+| `--bar-clipped-border-style` | dashed | dashed | 同じ | 範囲外に続くバーの端 |
+| `--today-line-width` | 2px | — | 廃止 | 今日の縦線をやめたため |
+| `--today-line-opacity` | 0.35 | — | 廃止 | 今日の縦線をやめたため |
+| `--radius-small` | 3px | 4px | 変更 | バー・ツールチップ |
+| `--radius-control` | — | 6px | 追加 | ボタン・入力欄 |
+| `--radius-panel` | — | 8px | 追加 | 表のカード |
+| `--radius-pill` | — | 999px | 追加 | 開発中表示・お知らせ・今日の丸 |
+| `--shadow-dragging` | 0 2px 6px rgb(0 0 0 / 0.25) | 0 4px 12px rgb(15 23 42 / 0.18) | 変更 | ドラッグ中のバー |
+| `--shadow-editing` | 0 1px 4px rgb(0 0 0 / 0.2) | 0 2px 8px rgb(15 23 42 / 0.15) | 変更 | 編集中のセル |
+| `--shadow-panel` | — | 0 1px 2px rgb(15 23 42 / 0.06) | 追加 | 表のカード |
 
 ### 余白・位置
 
-| 変数 | 現在 | 採用 |
-|---|---|---|
-| `--toolbar-height` | 44px | 48px |
-| `--toolbar-padding-x` | 12px | 16px |
-| `--toolbar-gap` | 16px | 20px |
-| `--field-gap` | 6px | 8px |
-| `--cell-padding-x` | 6px | 8px |
-| `--header-label-padding-bottom` | 4px | 6px |
-| `--month-label-padding-x` | 4px | 6px |
-| `--bar-inset-y` | 4px | 4px |
-| `--bar-handle-width` | 6px | 6px |
-| `--tooltip-offset` | 6px | 6px |
-| `--tooltip-padding` | 2px 6px | 3px 8px |
-| `--badge-padding` | 2px 8px | 3px 10px |
+| 変数 | 現在 | 確定 | 区分 | 用途 |
+|---|---|---|---|---|
+| `--toolbar-height` | 44px | 52px | 変更 | ヘッダーの高さ |
+| `--toolbar-padding-x` | 12px | 20px | 変更 | ヘッダー・ツールバー・カードの左右の余白 |
+| `--toolbar-gap` | 16px | 12px | 変更 | ツールバーの要素の間隔 |
+| `--toolbar-row-padding-y` | — | 14px | 追加 | ツールバーの行の上下の余白 |
+| `--field-gap` | 6px | 8px | 変更 | 入力欄と見出しの間隔 |
+| `--control-height` | — | 32px | 追加 | ボタン・入力欄の高さ |
+| `--control-padding-x` | — | 12px | 追加 | ボタン・入力欄の左右の余白 |
+| `--cell-padding-x` | 6px | 10px | 変更 | セル・列見出しの左右の余白 |
+| `--header-label-padding-bottom` | 4px | 6px | 変更 | 列見出しの文字と下線の間 |
+| `--month-label-padding-x` | 4px | 8px | 変更 | 月の見出しの左右の余白 |
+| `--bar-inset-y` | 4px | 0px | 変更 | バーをセルの高さいっぱいにする |
+| `--bar-handle-width` | 6px | 6px | 同じ | バーの端のつかめる幅 |
+| `--bar-label-gap` | — | 6px | 追加 | バーと営業日数の間隔 |
+| `--today-badge-size` | — | 20px | 追加 | 今日の丸の大きさ |
+| `--tooltip-offset` | 6px | 6px | 同じ | ツールチップとバーの間隔 |
+| `--tooltip-padding` | 2px 6px | 3px 8px | 変更 | ツールチップの内側の余白 |
+| `--badge-padding` | 2px 8px | 3px 10px | 変更 | お知らせ・開発中表示の内側の余白 |
 
-## アプリへ反映するときの注意(Phase 5 の実装時に確認する)
+## アプリへ反映するときの注意(Phase 5 の実装時に、着手前に影響範囲を報告して確認を取る)
 
-- **値の変更だけでは済まないもの**
-  - 今日の目印: 縦線(`Calendar.module.css` の `.todayLine`)をやめ、今日の列(本体の縦の帯とヘッダーの日・曜日)の背景を `--today-bg-color` にする。休日色より優先する
-  - 変数の追加(`--today-bg-color`、`--font-variant-numeric`)と廃止(`--today-line-width`、`--today-line-opacity`)
-  - `docs/UI_STATES.md` の該当箇所の更新
-- **Web フォントの読み込み**: Noto Sans JP と Inter を読み込む必要がある。Google Fonts の `<link>` を `index.html` に足すか、npm パッケージ(`@fontsource` など)で自前配信するかを決める(後者はパッケージ追加なので CLAUDE.md のとおり事前に確認する)
-- **未決**: バーだけ角丸を変えたくなった場合は `--bar-radius` を分ける案がある(現在は `--radius-small` を共用)
+値を変えるだけでは済まない、**画面の作り(構造)の変更**が含まれる。どれもドラッグの判定や日付の計算そのものには影響しない見込み。
+
+- **画面の構成**
+  - ヘッダー(アプリ名・開発中表示)とツールバー(表示開始日・行を追加・すべて消去)を2段に分ける。「行を追加」「すべて消去」は Phase 6 の機能なので、Phase 5 ではボタンを置かないか、置くなら Phase 6 で動かす
+  - 表をグレーの地の上の白いカードに入れる(スクロール領域の左端の位置が変わるが、ドラッグ判定は画面上の実際の位置を読むので計算は変わらない)
+- **カレンダーのヘッダー**: 日付と曜日の2段を、曜日を上・日付を下に並べ替える(高さ 66px は同じ)。今日の日付を丸で囲む。土日祝のヘッダーも休日色にする。月曜の縦線を少し濃くする
+- **今日の目印**: 縦線(`Calendar.module.css` の `.todayLine`)を削除する
+- **バー**: 高さいっぱいに表示する。右に営業日数を表示する(新しい表示要素。土日・祝日を除いた日数の計算を `src/lib` に追加してテストする。会社独自の休日を含めるかは別途決める)
+- **左ペイン**: 開始日・終了日の列に縦線。日付の文字を控えめな色・12px に
+- **ホバー**: 行にマウスを乗せたとき、左ペインとカレンダーの同じ行を明るくする(新しい状態)。列見出し・ボタンのホバーも追加
+- **変数の追加と廃止**: 上の表の「追加」「廃止」のとおり。`docs/UI_STATES.md` も確定デザインに合わせて更新する
+- **Web フォントの読み込み**: Inter と Noto Sans JP。Google Fonts の `<link>` を `index.html` に足すか、npm パッケージ(`@fontsource` など)で自前配信するかを決める(後者はパッケージ追加なので CLAUDE.md のとおり事前に確認する)
 
 ## 次にやること
 
-1. デザインキャンバスで細部を詰める(必要なら)
-2. handoff bundle を受け取る
-3. bundle のデザイントークンと `src/index.css` の変数の対応を整理してから反映する(SPEC 10章 Phase 5)
+1. handoff bundle を受け取る(または、このキャンバスを元に反映を始めてよいか確認する)
+2. bundle のトークンと `src/index.css` の変数の対応を整理し、上の構造の変更について影響範囲を報告して確認を取る
+3. 反映して、Phase 1〜4 の完了条件を再確認する(SPEC 10章 Phase 5)
